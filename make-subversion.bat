@@ -27,9 +27,7 @@ if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
 msbuild subversion_vcnet.sln /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release /t:__MORE__ 
 goto COMPILE_DONE
 :VCBUILD
-set VCBUILD_DEFAULT_CFG=Release|%TARGET_ARCH%
-rem vcbuild 
-set VCBUILD_DEFAULT_CFG=
+vcbuild subversion_vcnet.sln "Release|%TARGET_ARCH%"
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
