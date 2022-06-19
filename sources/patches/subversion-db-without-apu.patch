@@ -1,0 +1,11 @@
+using berkeley-db directly, donot depend on apu-db
+--- subversion-1.14.2/subversion/svn_private_config.hw
++++ subversion-1.14.2/subversion/svn_private_config.hw
+@@ -134,6 +134,7 @@
+ 
+ /* Inclusion of Berkeley DB header */
+ #ifdef SVN_WANT_BDB
++#include <db.h>
+ #define APU_WANT_DB
+ #include <apu_want.h>
+ #endif

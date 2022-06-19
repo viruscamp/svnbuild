@@ -1,0 +1,30 @@
+set SOURCES_DIR=D:\svnbuild\sources
+set TOOLS_DIR=D:\svnbuild\tools
+
+set SEVENZIPPATH="C:\Program Files\7-Zip-Zstandard"
+
+set BUILDROOT=%cd%
+set APDIR=%BUILDROOT%\Apache24
+
+@rem win32 x64
+set TARGET_ARCH=x64
+
+@rem for scons
+@rem values: 7.0 7.1 8.0 9.0 10.0 11.0 12.0 14.0 14.1 14.2 14.3
+@rem or: 2002 2003 2005 2008 2010 2012 2013 2015 2017 2019 2022
+set MSVC_VERSION=2019
+
+set VER_ZLIB=1.2.12
+set VER_SQLITE=3380500
+set VER_LIBINTL=0.14.6
+
+set VER_OPENSSL=1.1.1o
+set VER_SERF=1.3.9
+
+set VER_DB=DB5
+set VER_DB4=4.8.30
+set VER_DB5=5.3.28
+
+set VER_SASL=2.1.28
+
+set VER_SUBVERSION=1.14.2

@@ -1,0 +1,109 @@
+--- subversion-1.14.2/build/generator/gen_win_dependencies.py
++++ subversion-1.14.2/build/generator/gen_win_dependencies.py
+@@ -280,6 +280,11 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+           self.sln_version = '12.00'
+           self.vcproj_version = '14.2'
+           self.vcproj_extension = '.vcxproj'
++        elif val == '2022' or val == '17':
++          self.vs_version = '2022'
++          self.sln_version = '12.00'
++          self.vcproj_version = '14.3'
++          self.vcproj_extension = '.vcxproj'
+         elif re.match('^20\d+$', val):
+           print('WARNING: Unknown VS.NET version "%s",'
+                 ' assuming VS2012. Your VS can probably upgrade')
+@@ -742,8 +747,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     else:
+       # We have a source location
+       inc_path = lib_path = self.zlib_path
+-      lib_name = 'zlibstat.lib'
+-      debug_lib_name = 'zlibstatD.lib'
++      if os.path.exists(os.path.join(lib_path, 'zlib.lib')):
++        lib_name = 'zlib.lib'
++        debug_lib_name = 'zlibD.lib'
++      elif os.path.exists(os.path.join(lib_path, 'zlibstat.lib')):
++        lib_name = 'zlibstat.lib'
++        debug_lib_name = 'zlibstatD.lib'
++      else:
++        if show_warnings:
++          print('WARNING: \'zlib.lib\' or \'zlibstat.lib\' not found')
++          print("Use '--with-zlib' to configure zlib location.");
++        return
+ 
+     version_file_path = os.path.join(inc_path, 'zlib.h')
+ 
+@@ -1350,16 +1364,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     if not self.sasl_path:
+       return
+ 
+-    inc_dir = os.path.join(self.sasl_path, 'include')
+-
+-    version_file_path = os.path.join(inc_dir, 'sasl.h')
+-
+-    if not os.path.isfile(version_file_path):
++    if os.path.isfile(os.path.join(self.sasl_path, 'include', 'sasl', 'sasl.h')):
++      inc_dir = os.path.join(self.sasl_path, 'include', 'sasl')
++    elif os.path.isfile(os.path.join(self.sasl_path, 'include', 'sasl.h')):
++      inc_dir = os.path.join(self.sasl_path, 'include')
++    else:
+       if show_warnings:
+-        print('WARNING: \'%s\' not found' % (version_file_path,))
++        print('WARNING: \'include/sasl/sasl.h\' or \'include/sasl.h\' not found')
+         print("Use '--with-sasl' to configure sasl location.");
+       return
+ 
++    version_file_path = os.path.join(inc_dir, 'sasl.h')
+     txt = open(version_file_path).read()
+ 
+     vermatch = re.search(r'^\s*#define\s+SASL_VERSION_MAJOR\s+(\d+)', txt, re.M)
+@@ -1407,29 +1422,42 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     if not self.enable_nls or not self.libintl_path:
+       return;
+ 
+-    # We support 2 scenarios.
+-    if os.path.isfile(os.path.join(self.libintl_path, 'inc', 'libintl.h')) and\
+-       os.path.isfile(os.path.join(self.libintl_path, 'lib', 'intl3_svn.lib')):
++    if os.path.isfile(os.path.join(self.libintl_path, 'inc', 'libintl.h')):
++      inc_dir = os.path.join(self.libintl_path, 'inc')
++    elif os.path.isfile(os.path.join(self.libintl_path, 'include', 'libintl.h')):
++      inc_dir = os.path.join(self.libintl_path, 'include')
++    elif os.path.isfile(os.path.join(self.libintl_path, 'libintl.h')):
++      inc_dir = self.libintl_path
++    else:
++      if (show_warnings):
++        print('WARNING: \'libintl.h\' not found')
++        print("Use '--with-libintl' to configure libintl location.")
++      return
+ 
++    # We support 2 scenarios.
++    if os.path.isfile(os.path.join(self.libintl_path, 'lib', 'intl3_svn.lib')):
+       # 1. Subversion's custom libintl based on gettext 0.14.1
+-      inc_dir = os.path.join(self.libintl_path, 'inc')
+       lib_dir = os.path.join(self.libintl_path, 'lib')
+       dll_dir = os.path.join(self.libintl_path, 'bin')
+ 
+       lib_name = 'intl3_svn.lib'
+       dll_name = 'intl3_svn.dll'
+-    elif os.path.isfile(os.path.join(self.libintl_path, \
+-                                     'include', 'libintl.h')):
++    elif os.path.isfile(os.path.join(self.libintl_path, 'lib', 'intl.lib')):
+       # 2. A gettext install
+-      inc_dir = os.path.join(self.libintl_path, 'include')
+       lib_dir = os.path.join(self.libintl_path, 'lib')
+       dll_dir = os.path.join(self.libintl_path, 'bin')
+ 
+       lib_name = 'intl.lib'
+       dll_name = 'intl.dll'
++    elif os.path.isfile(os.path.join(self.libintl_path, 'intl3_svn.lib')):
++      lib_dir = self.libintl_path
++      dll_dir = self.libintl_path
++
++      lib_name = 'intl3_svn.lib'
++      dll_name = 'intl3_svn.dll'
+     else:
+       if (show_warnings):
+-        print('WARNING: \'libintl.h\' not found')
++        print('WARNING: \'intl3_svn.lib\' or \'intl.lib\' not found')
+         print("Use '--with-libintl' to configure libintl location.")
+       return
+ 

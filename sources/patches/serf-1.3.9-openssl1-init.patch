@@ -1,0 +1,52 @@
+from https://github.com/nono303/win-svn/issues/3#issuecomment-459861017
+add C89 variable define compatitily
+Index: buckets/ssl_buckets.c
+===================================================================
+--- serf-1.3.9.orig/buckets/ssl_buckets.c	(revision 1778230)
++++ serf-1.3.9/buckets/ssl_buckets.c	(working copy)
+@@ -1143,10 +1143,15 @@
+         int i, numlocks;
+ #endif
+ 
++        long libver; /* C89 compat */
++        /* SSL_library_init() must be called prior to any other OpenSSL
++           action. */
++        SSL_library_init();
++
+ #ifdef SSL_VERBOSE
+         /* Warn when compile-time and run-time version of OpenSSL differ in
+            major/minor version number. */
+-        long libver = SSLeay();
++        libver = SSLeay();
+ 
+         if ((libver ^ OPENSSL_VERSION_NUMBER) & 0xFFF00000) {
+             serf__log(SSL_VERBOSE, __FILE__,
+@@ -1163,7 +1167,6 @@
+ #endif
+         ERR_load_crypto_strings();
+         SSL_load_error_strings();
+-        SSL_library_init();
+         OpenSSL_add_all_algorithms();
+ 
+ #if APR_HAS_THREADS && !defined(USE_OPENSSL_1_1_API)
+Index: test/server/test_sslserver.c
+===================================================================
+--- serf-1.3.9.orig/test/server/test_sslserver.c	(revision 1778230)
++++ serf-1.3.9/test/server/test_sslserver.c	(working copy)
+@@ -228,6 +228,8 @@
+     /* Init OpenSSL globally */
+     if (!init_done)
+     {
++        /* SSL_library_init() must be called prior to any other OpenSSL action. */
++        SSL_library_init();
+ #ifdef USE_OPENSSL_1_1_API
+         OPENSSL_malloc_init();
+ #else
+@@ -235,7 +237,6 @@
+ #endif
+         ERR_load_crypto_strings();
+         SSL_load_error_strings();
+-        SSL_library_init();
+         OpenSSL_add_all_algorithms();
+         init_done = 1;
+     }

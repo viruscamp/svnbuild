@@ -1,0 +1,180 @@
+From 33cd26c33db577346793d0bee24727bb66413bd2 Mon Sep 17 00:00:00 2001
+From: viruscamp <viruscamp@gmail.com>
+Date: Tue, 14 Jun 2022 17:44:42 +0800
+Subject: [PATCH] Update windows VC++ nmake makefiles, add saslPASSDSS. Now
+ there are 14 plugins in 'plugins/NTMakefile'. Update plugins/makeinit.sh to
+ generate all 16 '*_init.c' files at once, using `sh makeinit.sh`. Update
+ plugins/passdss.c add `#include <stdint.h>` to make it compiled in vc-win32.
+
+Signed-off-by: viruscamp <viruscamp@gmail.com>
+---
+ plugins/NTMakefile  | 25 +++++++++++++++++++------
+ plugins/makeinit.sh | 14 +++++++-------
+ plugins/passdss.c   |  1 +
+ win32/common.mak    |  4 ++++
+ 4 files changed, 31 insertions(+), 13 deletions(-)
+
+diff --git a/plugins/NTMakefile b/plugins/NTMakefile
+index 554e9363..1931c96c 100755
+--- a/plugins/NTMakefile
++++ b/plugins/NTMakefile
+@@ -23,6 +23,10 @@ SRP_FLAGS=/DDO_SRP_SETPASS=1
+ PLUGINS_EXT=$(PLUGINS_EXT) saslOTP.dll
+ !ENDIF
+ 
++!IF "$(PASSDSS)" == "1"
++PLUGINS_EXT=$(PLUGINS_EXT) saslPASSDSS.dll
++!ENDIF
++
+ !IF "$(LDAP)" == "1"
+ PLUGINS_EXT=$(PLUGINS_EXT) saslLDAPDB.dll
+ 
+@@ -51,7 +55,7 @@ PLUGINS=saslANONYMOUS.dll \
+ 	$(PLUGINS_EXT) \
+ 	saslSASLDB.dll
+ 
+-generated_rc=saslANONYMOUS.rc saslPLAIN.rc saslCRAMMD5.rc saslDIGESTMD5.rc saslLOGIN.rc saslNTLM.rc saslSCRAM.rc saslGSSAPI.rc saslSRP.rc saslOTP.rc saslSASLDB.rc saslSQLITE.rc saslLDAPDB.rc
++generated_rc=saslANONYMOUS.rc saslPLAIN.rc saslCRAMMD5.rc saslDIGESTMD5.rc saslLOGIN.rc saslNTLM.rc saslSCRAM.rc saslGSSAPI.rc saslSRP.rc saslOTP.rc saslPASSDSS.rc saslSASLDB.rc saslSQLITE.rc saslLDAPDB.rc
+ 
+ # WS2tcpip.h included in Visual Studio 7 provides getaddrinfo, ...
+ # emulation on Windows, so there is no need to build getaddrinfo.c
+@@ -80,23 +84,26 @@ saslLOGIN_out = saslLOGIN.dll saslLOGIN.exp saslLOGIN.lib
+ saslSCRAM_objs = scram.obj scram_init.obj $(common_objs)
+ saslSCRAM_out = saslSCRAM.dll saslSCRAM.exp saslSCRAM.lib
+ 
+-saslNTLM_objs = ntlm.obj ntlm_init.obj $(common_objs)
++saslNTLM_objs = ntlm.obj ntlm_init.obj $(openssl_compat_objs) $(common_objs)
+ saslNTLM_out = saslNTLM.dll saslNTLM.exp saslNTLM.lib
+ 
+ saslGSSAPI_objs = gssapi.obj gssapiv2_init.obj $(common_objs)
+ saslGSSAPI_out = saslGSSAPI.dll saslGSSAPI.exp saslGSSAPI.lib
+ 
+-saslSRP_objs = srp.obj srp_init.obj $(common_objs)
++saslSRP_objs = srp.obj srp_init.obj $(openssl_compat_objs) $(common_objs)
+ saslSRP_out = saslSRP.dll saslSRP.exp saslSRP.lib
+ 
+ saslOTP_objs = otp.obj otp_init.obj $(common_objs)
+ saslOTP_out = saslOTP.dll saslOTP.exp saslOTP.lib
+ 
++saslPASSDSS_objs = passdss.obj passdss_init.obj $(openssl_compat_objs) $(common_objs)
++saslPASSDSS_out = saslPASSDSS.dll saslPASSDSS.exp saslPASSDSS.lib
++
+ saslSQL_objs = sql.obj sql_init.obj $(common_objs)
+ # saslSQL_out is an agregation of all generated files for all SQL plugins
+ saslSQL_out = saslSQLITE.dll saslSQLITE.exp saslSQLITE.lib
+ 
+-saslLDAPDB_objs = ldapdb.obj $(common_objs)
++saslLDAPDB_objs = ldapdb.obj ldapdb_init.obj $(common_objs)
+ saslLDAPDB_out = saslLDAPDB.dll saslLDAPDB.exp saslLDAPDB.lib
+ 
+ !IF "$(NTLM)" == "1" || "$(SRP)" == "1" || "$(OTP)" == "1" || "$(SCRAM)" == "1"
+@@ -145,8 +152,8 @@ SCRAM_FLAGS=/DHAVE_SHA512=1
+ saslSASLDB_objs = sasldb.obj sasldb_init.obj $(libsasldb_objs) $(common_objs)
+ saslSASLDB_out = saslSASLDB.dll saslSASLDB.exp saslSASLDB.lib
+ 
+-all_objs = $(saslANONYMOUS_objs) $(saslPLAIN_objs) $(saslCRAMMD5_objs) $(saslDIGESTMD5_objs) $(saslLOGIN_objs) $(saslSCRAM_objs) $(saslNTLM_objs) $(saslGSSAPI_objs) $(saslSRP_objs) $(saslOTP_objs) $(saslSASLDB_objs) $(saslSQL_objs) $(saslLDAPDB_objs)
+-all_out = $(saslANONYMOUS_out) $(saslPLAIN_out) $(saslCRAMMD5_out) $(saslDIGESTMD5_out) $(saslLOGIN_out) $(saslSCRAM_out) $(saslNTLM_out) $(saslGSSAPI_out) $(saslSRP_out) $(saslOTP_out) $(saslSASLDB_out) $(saslSQL_out) $(saslLDAPDB_out)
++all_objs = $(saslANONYMOUS_objs) $(saslPLAIN_objs) $(saslCRAMMD5_objs) $(saslDIGESTMD5_objs) $(saslLOGIN_objs) $(saslSCRAM_objs) $(saslNTLM_objs) $(saslGSSAPI_objs) $(saslSRP_objs) $(saslOTP_objs) $(saslPASSDSS_objs) $(saslSASLDB_objs) $(saslSQL_objs) $(saslLDAPDB_objs) $(openssl_compat_objs)
++all_out = $(saslANONYMOUS_out) $(saslPLAIN_out) $(saslCRAMMD5_out) $(saslDIGESTMD5_out) $(saslLOGIN_out) $(saslSCRAM_out) $(saslNTLM_out) $(saslGSSAPI_out) $(saslSRP_out) $(saslOTP_out) $(saslPASSDSS_out) $(saslSASLDB_out) $(saslSQL_out) $(saslLDAPDB_out)
+ 
+ # LIBSASL_EXPORTS is required to export additional DB routines from sasldb
+ DB_FLAGS = /I "$(DB_INCLUDE)" /I "..\sasldb" /D "LIBSASL_EXPORTS" /D "KEEP_DB_OPEN"
+@@ -165,6 +172,7 @@ OPENSSL_LIBS=$(OPENSSL_LIBS) libcrypto.lib
+ !ELSE IF EXISTS($(OPENSSL_LIBPATH)\libeay32.lib)
+ # OpenSSL <= 1.0
+ OPENSSL_LIBS=$(OPENSSL_LIBS) libeay32.lib
++openssl_compat_objs=crypto-compat.obj
+ !ELSE
+ # Don't error out because during 'nmake install', variable 'OPENSSL_LIBS'
+ # can be missing but it's not used anyway.
+@@ -244,6 +252,11 @@ saslOTP.dll: $(saslOTP_objs) saslOTP.res
+ <<
+ 	IF EXIST $@.manifest mt -manifest $@.manifest -outputresource:$@;2
+ 
++saslPASSDSS.dll: $(saslPASSDSS_objs) saslPASSDSS.res
++	$(LINK32DLL) @<< $(OPENSSL_LIBS) $(LINK32DLL_FLAGS) /out:"saslPASSDSS.dll" /implib:"saslPASSDSS.lib" $(saslPASSDSS_objs) saslPASSDSS.res
++<<
++	IF EXIST $@.manifest mt -manifest $@.manifest -outputresource:$@;2
++
+ saslSASLDB.dll: $(saslSASLDB_objs) saslSASLDB.res
+ 	$(LINK32DLL) @<< $(DB_LIBS) $(LINK32DLL_FLAGS) /out:"saslSASLDB.dll" /implib:"saslSASLDB.lib" $(saslSASLDB_objs) saslSASLDB.res
+ <<
+diff --git a/plugins/makeinit.sh b/plugins/makeinit.sh
+index 3131877a..a831414b 100644
+--- a/plugins/makeinit.sh
++++ b/plugins/makeinit.sh
+@@ -1,7 +1,7 @@
+ plugin_init="$1"
+ # mechanism plugins
+ for mech in anonymous crammd5 digestmd5 scram gssapiv2 kerberos4 login ntlm otp passdss plain srp gs2; do
+-    if [ ${plugin_init} = "${mech}_init.c" ];then
++    if [ "_${plugin_init}" = "_${mech}_init.c" ] || [ "_${plugin_init}" = "_" ];then
+ 
+         echo "
+ #include <config.h>
+@@ -46,13 +46,13 @@ BOOL APIENTRY DllMain( HANDLE hModule,
+ SASL_CLIENT_PLUG_INIT( $mech )
+ SASL_SERVER_PLUG_INIT( $mech )
+ "       > ${mech}_init.c
+-        echo "generating $1"
+-    fi # End of `if [ ${plugin_init} = "${mech}_init.c" ];then'
++        echo "generating ${mech}_init.c"
++    fi # End of `if [ "_${plugin_init}" = "_${mech}_init.c" ] || [ "_${plugin_init}" = "_" ];then'
+ done
+ 
+ # auxprop plugins
+ for auxprop in sasldb sql ldapdb; do
+-    if [ ${plugin_init} = "${auxprop}_init.c" ];then
++    if [ "_${plugin_init}" = "_${auxprop}_init.c" ] || [ "_${plugin_init}" = "_" ];then
+ 
+         echo "
+ #include <config.h>
+@@ -92,11 +92,11 @@ BOOL APIENTRY DllMain( HANDLE hModule,
+ 
+ SASL_AUXPROP_PLUG_INIT( $auxprop )
+ "       > ${auxprop}_init.c
+-        echo "generating $1"
+-    fi # End of `if [ ${plugin_init} = "${auxprop}_init.c" ];then'
++        echo "generating ${auxprop}_init.c"
++    fi # End of `if [ "_${plugin_init}" = "${auxprop}_init.c" ] || [ "_${plugin_init}" = "_" ];then'
+ done
+ 
+ # ldapdb is also a canon_user plugin
+-if [ ${plugin_init} = "ldapdb_init.c" ];then
++if [ "_${plugin_init}" = "_ldapdb_init.c" ] || [ "_${plugin_init}" = "_" ];then
+     echo "SASL_CANONUSER_PLUG_INIT( ldapdb )" >> ldapdb_init.c
+ fi
+diff --git a/plugins/passdss.c b/plugins/passdss.c
+index 2f81d44e..0a8a63ae 100644
+--- a/plugins/passdss.c
++++ b/plugins/passdss.c
+@@ -51,6 +51,7 @@
+ #include <stdio.h>
+ #include <ctype.h>
+ #include <string.h>
++#include <stdint.h>
+ 
+ /* check OpenSSL version */
+ #include <openssl/opensslv.h>
+diff --git a/win32/common.mak b/win32/common.mak
+index d9cc26e9..da06472f 100644
+--- a/win32/common.mak
++++ b/win32/common.mak
+@@ -130,6 +130,8 @@ SQLITE_INCLUDES=/I"C:\work\open_source\sqllite\sqlite\src" /I"C:\work\open_sourc
+ !IF "$(VERBOSE)" != "0"
+ !MESSAGE Defaulting SQLITE_INCLUDES includes to $(SQLITE_INCLUDES).
+ !ENDIF
++!ELSE
++SQLITE_INCLUDES=/I$(SQLITE_INCLUDE)
+ !ENDIF
+ 
+ !IF "$(SQLITE_LIBPATH)" == ""
+@@ -144,6 +146,8 @@ SQLITE_INCLUDES3=/I"c:\work\sqlite\generated"
+ !IF "$(VERBOSE)" != "0"
+ !MESSAGE Defaulting SQLITE_INCLUDES3 includes to $(SQLITE_INCLUDES3).
+ !ENDIF
++!ELSE
++SQLITE_INCLUDES3=/I$(SQLITE_INCLUDE3)
+ !ENDIF
+ 
+ !IF "$(SQLITE_LIBPATH3)" == ""

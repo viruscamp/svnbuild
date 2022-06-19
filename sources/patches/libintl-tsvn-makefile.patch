@@ -1,0 +1,99 @@
+--- Makefile.msvc
++++ Makefile.msvc
+@@ -103,7 +103,7 @@ OBJECTS = bindtextdom.obj dcgettext.obj dgettext.o
+ 
+ RESOURCES = intl.res
+ 
+-all : intl3_tsvn.lib libintl.h
++all : intl3_svn.lib libintl.h
+ 
+ libgnuintl.h :
+ !if !$(DLL)
+@@ -186,18 +186,20 @@ intl-compat.obj : $(srcdir)\intl-compat.c libgnuin
+ 
+ !if !$(DLL)
+ 
+-intl3_tsvn.lib : $(OBJECTS)
+-	-$(RM) intl3_tsvn.lib
+-	$(AR) $(AR_FLAGS)intl3_tsvn.lib $(OBJECTS)
++intl3_svn.lib : $(OBJECTS)
++	-$(RM) intl3_svn.lib
++	$(AR) $(AR_FLAGS)intl3_svn.lib $(OBJECTS)
+ 
+ !else
+ 
+ # intl.dll and intl.lib are created together.
+-intl3_tsvn.lib : $(OBJECTS) $(RESOURCES)
+-	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_tsvn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,5.02
++intl3_svn.lib : $(OBJECTS) $(RESOURCES)
++	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_svn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,5.02
++	mt -nologo -manifest intl3_svn.dll.manifest compatibility.manifest.in /out:intl3_svn.dll.manifest
++	mt -nologo -manifest intl3_svn.dll.manifest /outputresource:"intl3_svn.dll;#2"
+ 
+ intl.res : $(srcdir)\..\windows\intl.rc
+-	rc -Fo intl.res $(srcdir)\libintl3-dll.rc
++	rc -nologo -Fo intl.res $(srcdir)\libintl3-dll.rc
+ 
+ !endif
+ 
+@@ -211,10 +213,10 @@ install : all force
+ 	-mkdir $(exec_prefix)
+ !if $(DLL)
+ 	-mkdir $(bindir)
+-	$(INSTALL_DATA) intl.dll $(bindir)\intl.dll
++	$(INSTALL_DATA) intl3_svn.dll $(bindir)\intl3_svn.dll
+ !endif
+ 	-mkdir $(libdir)
+-	$(INSTALL_DATA) intl.lib $(libdir)\intl.lib
++	$(INSTALL_DATA) intl3_svn.lib $(libdir)\intl3_svn.lib
+ 
+ installdirs : force
+ 	-mkdir $(prefix)
+@@ -228,9 +230,9 @@ installdirs : force
+ uninstall : force
+ 	$(RM) $(includedir)\libintl.h
+ !if $(DLL)
+-	$(RM) $(bindir)\intl.dll
++	$(RM) $(bindir)\intl3_svn.dll
+ !endif
+-	$(RM) $(libdir)\intl.lib
++	$(RM) $(libdir)\intl3_svn.lib
+ 
+ check : all
+ 
+@@ -245,6 +247,8 @@ clean : force
+ 	$(RM) *.dll
+ 	$(RM) intl.res
+ 	$(RM) core
++	$(RM) *.dll.manifest
++	$(RM) *.pdb
+ 
+ distclean : clean
+ 
+--- compatibility.manifest.in
++++ compatibility.manifest.in
+@@ -0,0 +1,23 @@
++<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
++<asmv1:assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
++  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
++    <application>
++      <!-- Windows 10 -->
++      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
++      <!-- Windows 8.1 -->
++      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}"/>
++      <!-- Windows Vista -->
++      <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
++      <!-- Windows 7 -->
++      <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>
++      <!-- Windows 8 -->
++      <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"/>
++    </application>
++  </compatibility>
++<!-- <asmv3:application xmlns:asmv3="urn:schemas-microsoft-com:asm.v3">
++  <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
++    <dpiAware>True/PM</dpiAware>
++    <dpiAwareness xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">permonitorv2,permonitor</dpiAwareness>
++  </asmv3:windowsSettings>
++</asmv3:application> -->
++</asmv1:assembly>
+\ No newline at end of file

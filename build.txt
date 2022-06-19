@@ -1,0 +1,173 @@
+
+set BUILDROOT=d:\svnbuild
+
+set PATH=%BUILDROOT%\bin;%BUILDROOT%\scons-local;%BUILDROOT%\gettext-0.14.4-bin\bin;%BUILDROOT%\Python;%BUILDROOT%\Perl\perl\bin;%PATH%
+
+
+cd openssl-1.0.2u
+perl Configure VC-WIN32
+call ms\do_nasm
+nmake -f ms\ntdll.mak
+cd out32dll
+call ..\ms\test
+cd %BUILDROOT%
+
+cd openssl-1.1.1o
+perl Configure VC-WIN32
+nmake
+nmake test
+cd %BUILDROOT%
+
+# 用这个 1.2.11 大概也能用
+cd zlib-1.2.12
+# 改一份 makefile
+nmake -f win32\Makefile.msc zlib.lib
+# serf 要 zlib.lib svn 要 zlibstat.lib
+copy /y zlib.lib zlibstat.lib
+cd %BUILDROOT%
+
+
+cd libintl-tsvn\gettext-0.14.6\gettext-runtime\intl
+# 改一份 Makefile.msvc 生成 intl3_svn.* 而不是 intl3_tsvn.*
+nmake -f Makefile.msvcsvn DLL=1
+#nmake -f Makefile.msvcsvn install prefix=%BUILDROOT%\libintl-tsvn
+
+mkdir ..\..\..\inc
+copy /y libintl.h ..\..\..\inc\libintl.h
+# 加上 #define LIBINTL_VERSION 0x000E06 // 0.14.6
+mkdir ..\..\..\lib
+copy /y intl3_svn.lib ..\..\..\lib\
+copy /y intl3_svn.exp ..\..\..\lib\
+mkdir ..\..\..\bin
+copy /y intl3_svn.dll ..\..\..\bin\
+copy /y intl3_svn.dll.manifest ..\..\..\bin\
+copy /y intl3_svn.pdb ..\..\..\bin\
+
+cd %BUILDROOT%
+
+
+# ra_serf 处理 http:// 
+cd serf-1.3.9
+# scon 编译
+# scon 弱智程序非要自己找，只认 VC10 不认 WinSDK-7.1
+# 只有 winsdk 没有vs2010 要做个 HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\SxS\VS7 基本从 VC7 复制 地址改上级的
+# 改 C:\Program Files\Microsoft Visual Studio 10.0\Common7\Tools\VCVarsQueryRegistry.bat GetWindowsSdkDirHelper 加上 v7.1
+scons APR=%BUILDROOT%\Apache24 APU=%BUILDROOT%\Apache24 OPENSSL=%BUILDROOT%\openssl-1.1.1o ZLIB=%BUILDROOT%\zlib-1.2.12 LINKFLAGS="/LIBPATH:%BUILDROOT%:\Apache24\lib;%BUILDROOT%\openssl-1.0.2u" PREFIX=%BUILDROOT%\serf\lib
+
+..\python\Scripts\scons APR=%BUILDROOT%\Apache24 APU=%BUILDROOT%\Apache24 OPENSSL=%BUILDROOT%\openssl-1.1.1o ZLIB=%BUILDROOT%\zlib-1.2.12 LINKFLAGS="/LIBPATH:%BUILDROOT%\Apache24\lib;%BUILDROOT%\openssl-1.1.1o" PREFIX=%BUILDROOT%\serf\lib
+
+cd %BUILDROOT%
+
+
+
+cd db-4.8.30
+# 编译 db-4.8
+# 用 vc10 升级 sln+vcproj 或 dsw+dsp
+# 实际是用 vs2019 升级 dsw+dsp 大概是 ia64 的原因升级 vcproj 失败
+# 复制后 替换 ToolsVersion="15.0" 为 ToolsVersion="4.0" 替换 <PlatformToolset>v142</PlatformToolset> 为 <PlatformToolset>v100</PlatformToolset>
+# msbuild /tv:4.0 /property:PlatformToolset=Windows7.1SDK 可以覆盖 ToolsVersion PlatformToolset
+
+# 对高版本 cpp db-4.8 源码 替换 atomic_init 为 db_atomic_init 因为与标准函数冲突
+
+cd build_windows
+#msbuild db_static.vcxproj /tv:4.0 /p:Configuration="Release x86";PlatformToolset=Windows7.1SDK 
+msbuild db_dll.vcxproj /tv:4.0 /p:Configuration="Release x86";PlatformToolset=Windows7.1SDK 
+
+cd build_windows_vcxproj
+#msbuild db_static.vcxproj /tv:4.0 /p:PlatformToolset=Windows7.1SDK /p:Platform=Win32 /p:Configuration=Release
+msbuild db.vcxproj /tv:4.0 /p:PlatformToolset=Windows7.1SDK /p:Platform=Win32 /p:Configuration=Release
+
+mkdir ..\..\db4-win32\include
+copy /y db.h ..\..\db4-win32\include
+mkdir ..\..\db4-win32\lib
+copy /y Win32\Release\libdb48s.lib ..\..\db4-win32\lib
+copy /y Win32\Release\libdb48.*  ..\..\db4-win32\lib
+
+
+
+
+cd %BUILDROOT%
+
+
+# ra_svn 处理 svn:// 地址 最好带 cyrus-sasl
+cd cyrus-sasl-2.1.23
+# 7.1 sdk 没有 versionhelpers.h 高版本的才有? 从 perl 那里复制 mingw的 versionhelpers.h winapifamily.h 到 common
+# 补充 _WIN32_WINNT_WIN8 等定义从 https://docs.microsoft.com/zh-cn/cpp/porting/modifying-winver-and-win32-winnt?view=msvc-170
+# cyrus-sasl-2.1.28\include\md5global.h(25) INT8=64bit Microsoft SDKs\Windows\v7.1\INCLUDE\basetsd.h(76) INT8=8bit
+# 28有 vcxproj
+#msbuild win32\cyrus-sasl-core.sln /tv:4.0 /p:Configuration=Release /p:Platform=x86 /p:PlatformToolset=Windows7.1SDK 
+# 23有 NTMakefile 注释掉所有 NTMakefile 的 #include <afxres.h> 加一个 winsdk\include\afxres.h 里面 #include <winver.h>
+# saslSASLDB 没有禁用方法 似乎可以不管失败
+nmake -f NTMakefile NTLM=1 SRP=1 OTP=1 DB_LIB=libdb48.lib DB_INCLUDE=%BUILDROOT%\db4-win32\include DB_LIBPATH=%BUILDROOT%\db4-win32\lib OPENSSL_INCLUDE="%BUILDROOT%\openssl-1.0.2u\inc32" OPENSSL_LIBPATH="%BUILDROOT%\openssl-1.0.2u\out32dll" prefix=%BUILDROOT%\sasl-win32 install
+
+nmake -f NTMakefile NTLM=1 SRP=1 OTP=1 DB_LIB=libdb53.lib DB_INCLUDE=%BUILDROOT%\db5-x64\include DB_LIBPATH=%BUILDROOT%\db5-x64\lib OPENSSL_INCLUDE="%BUILDROOT%\openssl-1.1.1o\inc32" OPENSSL_LIBPATH="%BUILDROOT%\openssl-1.1.1o\out32dll" prefix=%BUILDROOT%\sasl-x64 install
+
+# gen-make 检查的目录不同
+copy  /y %BUILDROOT%\sasl-win32\include\sasl\*.h %BUILDROOT%\sasl-win32\include\
+
+cd %BUILDROOT%
+
+
+cd subversion-1.14.2
+
+# 目前还是不能用 db4 语法错误
+python gen-make.py --vsnet-version=2010 --with-openssl=%BUILDROOT%\openssl-1.1.1o --with-zlib=%BUILDROOT%\zlib-1.2.12 --with-libintl=%BUILDROOT%\libintl-tsvn --with-sqlite=%BUILDROOT%\sqlite-amalgamation-3380500 --with-httpd=%BUILDROOT%\Apache24 --with-apr=%BUILDROOT%\Apache24 --with-apr-util=%BUILDROOT%\Apache24 --with-apr-iconv=%BUILDROOT%\Apache24 --with-serf=%BUILDROOT%\serf-1.3.9 --with-sasl=%BUILDROOT%\sasl-x64 --with-berkeley-db=%BUILDROOT%\db4-x64
+
+
+# 生成的 *.vcxproj AdditionalIncludeDirectories 不包括 C:\Program Files\Microsoft SDKs\Windows\v7.1\INCLUDE;
+# 用此文件插入 之后必须删除 C:\Documents and Settings\Administrator\Local Settings\Application Data\Microsoft\MSBUILD\v4.0\Microsoft.Cpp.Win32.user.props
+
+# 缺  C:\Program Files\Microsoft SDKs\Windows\v7.1\INCLUDE\ammintrin.h
+
+# 二进制的httpd 缺 expat_external.h 应该是 2.2.0 下载源码找到 https://github.com/libexpat/libexpat/releases/tag/R_2_2_0
+# 版本不配 https://svn.apache.org/repos/asf/apr/apr-util/tags/1.5.4
+
+# %BUILDROOT%\subversion-1.14.2\build\win32\vcnet-vcproj\*.vcxproj 有问题 必须做如下替换
+# <AdditionalLibraryDirectories>..\libintl-tsvn\lib; 替换为 <AdditionalLibraryDirectories>..\..\..\..\libintl-tsvn\lib;
+# ;..\..\..\..\libintl-tsvn\lib; 替换为 ;
+msbuild subversion_vcnet.sln /t:__MORE__ /p:Configuration=Release /p:PlatformToolset=Windows7.1SDK
+# --with-db 就编译失败，但是应该只有 fs_base 编译不过，实际全部失败
+
+msbuild subversion_vcnet.sln /t:__MORE__ /p:Configuration=Release /p:PlatformToolSet=v142 /p:Platform=x64
+
+
+
+# 这个版本也不好编译
+cd subversion-1.8.19
+
+# 不行 apr 检查的目录不同 C:\Apache24\srclib\apr\include\apr_version.h
+python gen-make.py --vsnet-version=2010 --with-openssl=..\openssl-1.0.2u --with-zlib=..\zlib-1.2.12 --with-libintl=..\libintl-tsvn --with-sqlite=..\sqlite-amalgamation-3380500 --with-httpd=C:\Apache24 --with-apr=C:\Apache24 --with-apr-util=C:\Apache24 --with-apr-iconv=C:\Apache24 --with-sasl=sasl-win32 --with-berkeley-db=..\db4-win32
+
+msbuild subversion_vcnet.sln /t:__ALL_TESTS__ /p:Configuration=Release
+
+
+
+
+
+#测试
+mkdir Release\subversion\tests\cmdline
+
+xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
+# subversion\tests\cmdline\update_tests.py(1061) subversion\tests\cmdline\checkout_tests.py(2243) 选盘符 要 pywin32
+
+# 复制设置目录
+PATH=%BUILD_ROOT%\svn-win32-%VER%\bin;%PATH%
+
+python win-tests.py -c -r -v
+python win-tests.py -c -r -v -u http://localhost
+
+不能直接
+LoadModule dav_svn_module C:/svn-1.14.2/bin/mod_dav_svn.so
+LoadModule authz_svn_module C:/svn-1.14.2/bin/mod_authz_svn.so
+
+必须把 svn\bin 加到 httpd 的启动 PATH 或者把所有依赖 dll 全部复制到 apache\bin
+原因
+mod_dav_svn --> libsvn_fs-1 --> libdb48.dll
+mod_dav_svn --> libsvn_fs-1 -delay-> libsvn_fs_fs-1
+delay load dll 必须在 path 中 与载入的dll同路径不行
+
+
+# build/win32/make_dist.conf 复制出一份
+# build/win32/make_dist.py 简单修改 82 加 try 142 170 注释掉
+python build/win32/make_dist.py svn-win32-1.14.2 package
+# dll 不全

@@ -1,0 +1,178 @@
+Include file <db.h> contains a macro `store`, which messed up `_Atomic_storage::store` in <atomic> included from "db_cxx.h".
+To compile db4 in vc, we must make sure that "db_cxx.h" is included before "db.h", and "dbinc/cxx_int.h" is after both.
+--- db-4.8.30/cxx/cxx_db.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_db.cpp	Sun Jun 19 22:47:53 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-4.8.30/cxx/cxx_dbc.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_dbc.cpp	Sun Jun 19 22:47:44 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-4.8.30/cxx/cxx_dbt.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_dbt.cpp	Sun Jun 19 22:47:36 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-4.8.30/cxx/cxx_env.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_env.cpp	Sun Jun 19 22:47:27 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-4.8.30/cxx/cxx_except.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_except.cpp	Sun Jun 19 22:47:17 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ static const int MAX_DESCRIPTION_LENGTH = 1024;
+--- db-4.8.30/cxx/cxx_lock.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_lock.cpp	Sun Jun 19 22:47:07 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ ////////////////////////////////////////////////////////////////////////
+--- db-4.8.30/cxx/cxx_logc.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_logc.cpp	Sun Jun 19 22:46:59 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-4.8.30/cxx/cxx_mpool.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_mpool.cpp	Sun Jun 19 22:46:49 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macros for simple methods that pass through to the
+--- db-4.8.30/cxx/cxx_multi.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_multi.cpp	Sun Jun 19 22:46:42 2022
+@@ -6,11 +6,11 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+-
+-#include "db_cxx.h"
+ 
+ DbMultipleIterator::DbMultipleIterator(const Dbt &dbt)
+  : data_((u_int8_t*)dbt.get_data()),
+--- db-4.8.30/cxx/cxx_seq.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_seq.cpp	Sun Jun 19 22:46:32 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macro for simple methods that pass through to the
+--- db-4.8.30/cxx/cxx_txn.cpp	Tue Apr 13 04:25:22 2010
++++ db-4.8.30/cxx/cxx_txn.cpp	Sun Jun 19 22:46:10 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/txn.h"

@@ -1,0 +1,15 @@
+awk95.zip
+patch-2.5.9-7-bin.zip
+patch.exe.manifest
+
+gettext-0.14.4-bin.zip
+gettext-0.14.4-dep.zip
+
+nasm-2.15.05-win32.zip
+nasm-2.15.05-win64.zip
+
+Portable Python 2.7.15 Basic.exe
+python-3.10.4-embed-amd64.zip
+
+strawberry-perl-5.32.1.1-32bit-portable.zip
+strawberry-perl-5.32.1.1-64bit-portable.zip

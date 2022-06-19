@@ -1,0 +1,226 @@
+Include file <db.h> contains a macro `store`, which messed up `_Atomic_storage::store` in <atomic> included from "db_cxx.h".
+To compile db5 in vc, we must make sure that "db_cxx.h" is included before "db.h", and "dbinc/cxx_int.h" is after both.
+--- db-5.x/lang/cxx/cxx_channel.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_channel.cpp	Tue Jun 14 13:14:09 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macro for simple methods that pass through to the
+--- db-5.x/lang/cxx/cxx_db.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_db.cpp	Tue Jun 14 13:13:59 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-5.x/lang/cxx/cxx_dbc.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_dbc.cpp	Tue Jun 14 13:13:48 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-5.x/lang/cxx/cxx_dbt.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_dbt.cpp	Tue Jun 14 13:13:37 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-5.x/lang/cxx/cxx_env.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_env.cpp	Tue Jun 14 13:13:28 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-5.x/lang/cxx/cxx_except.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_except.cpp	Tue Jun 14 13:13:20 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ static const int MAX_DESCRIPTION_LENGTH = 1024;
+--- db-5.x/lang/cxx/cxx_lock.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_lock.cpp	Tue Jun 14 13:12:26 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ ////////////////////////////////////////////////////////////////////////
+--- db-5.x/lang/cxx/cxx_logc.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_logc.cpp	Tue Jun 14 13:12:15 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/db_page.h"
+--- db-5.x/lang/cxx/cxx_mpool.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_mpool.cpp	Tue Jun 14 13:12:35 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macros for simple methods that pass through to the
+--- db-5.x/lang/cxx/cxx_multi.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_multi.cpp	Tue Jun 14 13:12:45 2022
+@@ -6,11 +6,11 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+-
+-#include "db_cxx.h"
+ 
+ DbMultipleIterator::DbMultipleIterator(const Dbt &dbt)
+  : data_((u_int8_t*)dbt.get_data()),
+--- db-5.x/lang/cxx/cxx_rid.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_rid.cpp	Tue Jun 14 13:13:03 2022
+@@ -6,11 +6,11 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+-
+-#include "db_cxx.h"
+ 
+ DbHeapRecordId::DbHeapRecordId()
+ {
+--- db-5.x/lang/cxx/cxx_seq.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_seq.cpp	Tue Jun 14 13:13:11 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macro for simple methods that pass through to the
+--- db-5.x/lang/cxx/cxx_site.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_site.cpp	Tue Jun 14 13:11:57 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ // Helper macro for simple methods that pass through to the
+--- db-5.x/lang/cxx/cxx_txn.cpp	Mon Sep  9 23:35:04 2013
++++ db-5.x.new/lang/cxx/cxx_txn.cpp	Tue Jun 14 13:11:31 2022
+@@ -6,11 +6,12 @@
+  * $Id$
+  */
+ 
++#include "db_cxx.h"
++
+ #include "db_config.h"
+ 
+ #include "db_int.h"
+ 
+-#include "db_cxx.h"
+ #include "dbinc/cxx_int.h"
+ 
+ #include "dbinc/txn.h"
