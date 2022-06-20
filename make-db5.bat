@@ -19,7 +19,10 @@ if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
 msbuild build_windows\VS10\db.vcxproj /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release
 goto COMPILE_DONE
 :VCBUILD
-vcbuild build_windows\VS8\db.vcproj "Release|%TARGET_ARCH%"
+@rem something goes wrong when upgrade in vs2008
+@rem vcbuild /upgrade build_windows\VS8\db.vcproj
+@rem vcbuild build_windows\VS8\db.vcproj "Release|%TARGET_ARCH%"
+vcbuild build_windows\Berkeley_DB.sln "Release|%TARGET_ARCH%"
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 

@@ -23,7 +23,7 @@ goto COMPILE_DONE
 @rem something goes wrong when upgrade in vs2008
 @rem vcbuild /upgrade build_windows\db.vcproj
 @rem vcbuild build_windows\db.vcproj "Release|%TARGET_ARCH%"
-vcbuild Berkeley_DB.sln "Release|%TARGET_ARCH%"
+vcbuild build_windows\Berkeley_DB.sln "Release|%TARGET_ARCH%"
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
