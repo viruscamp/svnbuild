@@ -1,5 +1,4 @@
 set PATH=%SEVENZIPPATH%;%PATH%
-set INSDIR=%BUILDROOT%\%TARGET_ARCH%
 
 if "%TARGET_ARCH%"=="x86" set TARGET_ARCH=win32
 
@@ -32,9 +31,10 @@ rem other tools wget awk nasm patch
 set PATH=%TOOLS_DIR%\bin;%PATH%
 
 set PATH=%TOOLS_DIR%\perl\perl\bin;%PATH%
+@rem set PATH=C:\Strawberry\perl\bin;%PATH%
 
-set PY_SETUP=PY3X64EMBE
-set SCONS_SETUP=SCONS_PIP
+set PY_SETUP=PY2XP
+set SCONS_SETUP=SCONS_LOCAL
 
 if "%PY_SETUP%"=="PY2XPGREEN" goto PY2XPGREEN
 if "%PY_SETUP%"=="PY2XP" goto PY2XP

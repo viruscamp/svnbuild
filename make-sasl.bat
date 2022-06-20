@@ -17,8 +17,9 @@ copy /y win32\include\md5global.h include\
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-if "%VER_DB%"=="DB4" set SASL_DB_ARGS=DB_INCLUDE=%INSDIR%\include\db-4 DB_LIB=libdb48.lib DB_LIBPATH=%INSDIR%\lib
-if "%VER_DB%"=="DB5" set SASL_DB_ARGS=DB_INCLUDE=%INSDIR%\include\db-5 DB_LIB=libdb53.lib DB_LIBPATH=%INSDIR%\lib
+set SASL_DB_ARGS=
+if "%USE_DB%"=="DB4" set SASL_DB_ARGS=DB_INCLUDE=%INSDIR%\include DB_LIBPATH=%INSDIR%\lib DB_LIB=libdb48.lib
+if "%USE_DB%"=="DB5" set SASL_DB_ARGS=DB_INCLUDE=%INSDIR%\include DB_LIBPATH=%INSDIR%\lib DB_LIB=libdb53.lib
 set SASL_OPENSSL_ARGS=OPENSSL_INCLUDE=%INSDIR%\include OPENSSL_LIBPATH=%INSDIR%\lib
 nmake -f NTMakefile NTLM=1 SRP=1 OTP=1 PASSDSS=1 %SASL_DB_ARGS% %SASL_OPENSSL_ARGS% prefix=%INSDIR%
 if "%1"=="compile" goto EXIT
