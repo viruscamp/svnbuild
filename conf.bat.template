@@ -1,6 +1,9 @@
 set SOURCES_DIR=D:\svnbuild\sources
 set TOOLS_DIR=D:\svnbuild\tools
+
 set SEVENZIPPATH="C:\Program Files\7-Zip-Zstandard"
+set PYTHONHOME=%TOOLS_DIR%\python
+set PERLHOME=%TOOLS_DIR%\perl
 
 set APDIR=C:\Apache24
 
