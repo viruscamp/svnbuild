@@ -36,7 +36,7 @@ goto COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
 :INSTALL
-nmake install
+nmake install_sw
 mkdir %INSDIR%
 
 if "%1"=="install" goto EXIT

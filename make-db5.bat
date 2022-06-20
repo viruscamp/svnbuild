@@ -19,9 +19,7 @@ if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
 msbuild build_windows\VS10\db.vcxproj /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release
 goto COMPILE_DONE
 :VCBUILD
-set VCBUILD_DEFAULT_CFG=Release|%TARGET_ARCH%
-vcbuild build_windows\VS8\db.vcproj
-set VCBUILD_DEFAULT_CFG=
+vcbuild build_windows\VS8\db.vcproj "Release|%TARGET_ARCH%"
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
