@@ -1,6 +1,43 @@
+--- subversion-1.14.2/gen-make.py
++++ subversion-1.14.2/gen-make.py
+@@ -206,6 +206,9 @@ def _usage_exit(err=None):
+   print("  --with-static-openssl")
+   print("           Use static openssl")
+   print("")
++  print("  --with-shared-serf")
++  print("           Use shared serf")
++  print("")
+   print("  --vsnet-version=VER")
+   print("           generate for VS.NET version VER (2005-2017 or 9.0-15.0)")
+   print("           [implies '-t vcproj']")
+@@ -257,6 +260,7 @@ if __name__ == '__main__':
+                             'with-apr_memcache=',
+                             'with-static-apr',
+                             'with-static-openssl',
++                            'with-shared-serf',
+                             'enable-pool-debug',
+                             'enable-purify',
+                             'enable-quantify',
 --- subversion-1.14.2/build/generator/gen_win_dependencies.py
 +++ subversion-1.14.2/build/generator/gen_win_dependencies.py
-@@ -280,6 +280,11 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+@@ -168,6 +168,7 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     self.disable_shared = None
+     self.static_apr = None
+     self.static_openssl = None
++    self.shared_serf = None
+     self.instrument_apr_pools = None
+     self.instrument_purify_quantify = None
+     self.sasl_path = None
+@@ -227,6 +228,8 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+         self.static_apr = 1
+       elif opt == '--with-static-openssl':
+         self.static_openssl = 1
++      elif opt == '--with-shared-serf':
++        self.shared_serf = 1
+       elif opt == '-D':
+         self.cpp_defines.append(val)
+       elif opt == '--vsnet-version':
+@@ -280,6 +283,11 @@ class GenDependenciesBase(gen_base.GeneratorBase):
            self.sln_version = '12.00'
            self.vcproj_version = '14.2'
            self.vcproj_extension = '.vcxproj'
@@ -12,7 +49,7 @@
          elif re.match('^20\d+$', val):
            print('WARNING: Unknown VS.NET version "%s",'
                  ' assuming VS2012. Your VS can probably upgrade')
-@@ -742,8 +747,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+@@ -742,8 +750,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
      else:
        # We have a source location
        inc_path = lib_path = self.zlib_path
@@ -32,7 +69,56 @@
  
      version_file_path = os.path.join(inc_path, 'zlib.h')
  
-@@ -1350,16 +1364,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+@@ -1300,17 +1317,20 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     if os.path.isfile(os.path.join(inc_dir, 'serf.h')):
+       # Source layout
+       lib_dir = self.serf_path
++      bin_dir = self.serf_path
+       debug_lib_dir = None
+       inc_dir = self.serf_path
+     elif os.path.isfile(os.path.join(self.serf_path, 'include/serf-1/serf.h')):
+       # Install layout
+       inc_dir = os.path.join(self.serf_path, 'include/serf-1')
+       lib_dir = os.path.join(self.serf_path, 'lib')
++      bin_dir = os.path.join(self.serf_path, 'bin')
+       debug_lib_dir = None
+     elif os.path.isfile(os.path.join(self.serf_path, 'include/serf-2/serf.h')):
+       # Install layout
+       inc_dir = os.path.join(self.serf_path, 'include/serf-2')
+       lib_dir = os.path.join(self.serf_path, 'lib')
++      bin_dir = os.path.join(self.serf_path, 'bin')
+       debug_lib_dir = None
+     else:
+       if show_warnings:
+@@ -1331,15 +1351,25 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+     serf_ver_maj = version[0]
+ 
+     if serf_ver_maj > 0:
+-      lib_name = 'serf-%d.lib' % (serf_ver_maj,)
++      lib_name_base = 'serf-%d' % (serf_ver_maj,)
+     else:
+-      lib_name = 'serf.lib'
++      lib_name_base = 'serf'
++    if self.shared_serf:
++      lib_name = 'lib' + lib_name_base + '.lib'
++      dll_name = 'lib' + lib_name_base + '.dll'
++      dll_dir = bin_dir
++    else:
++      lib_name = lib_name_base + '.lib'
++      dll_name = None
++      dll_dir = None
+ 
+     defines = ['SVN_HAVE_SERF', 'SVN_LIBSVN_RA_LINKS_RA_SERF']
+ 
+     self._libraries['serf'] = SVNCommonLibrary('serf', inc_dir, lib_dir,
+                                                 lib_name, serf_version,
+                                                 debug_lib_dir=debug_lib_dir,
++                                                dll_dir=dll_dir,
++                                                dll_name=dll_name,
+                                                 defines=defines)
+ 
+   def _find_sasl(self, show_warnings):
+@@ -1350,16 +1380,17 @@ class GenDependenciesBase(gen_base.GeneratorBase):
      if not self.sasl_path:
        return
  
@@ -56,7 +142,7 @@
      txt = open(version_file_path).read()
  
      vermatch = re.search(r'^\s*#define\s+SASL_VERSION_MAJOR\s+(\d+)', txt, re.M)
-@@ -1407,29 +1422,42 @@ class GenDependenciesBase(gen_base.GeneratorBase):
+@@ -1407,29 +1438,42 @@ class GenDependenciesBase(gen_base.GeneratorBase):
      if not self.enable_nls or not self.libintl_path:
        return;
  

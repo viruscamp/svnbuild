@@ -27,6 +27,9 @@ set VER_LIBINTL=0.14.6
 set VER_OPENSSL=1.1.1o
 set VER_SERF=1.3.9
 
+@rem set USE_SHARED_SERF=1 to used libserf-1.dll
+set USE_SHARED_SERF=1
+
 @rem set USE_DB=
 set USE_DB=DB5
 set VER_DB4=4.8.30
