@@ -3,7 +3,7 @@ set MAKE_DIR=%~dp0
 call %MAKE_DIR%\env.bat
 
 call %MAKE_DIR%\make-zlib.bat
-if not "%VER_SQLITE%"=="" call %MAKE_DIR%\make-sqlite.bat
+call %MAKE_DIR%\make-sqlite.bat
 call %MAKE_DIR%\make-libintl.bat
 
 call %MAKE_DIR%\make-openssl.bat

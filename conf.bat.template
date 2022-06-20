@@ -27,10 +27,12 @@ set VER_LIBINTL=0.14.6
 set VER_OPENSSL=1.1.1o
 set VER_SERF=1.3.9
 
+@rem set USE_DB=
 set USE_DB=DB5
 set VER_DB4=4.8.30
 set VER_DB5=5.3.28
 
+@rem set VER_SASL=
 set VER_SASL=2.1.28
 
 set VER_SUBVERSION=1.14.2

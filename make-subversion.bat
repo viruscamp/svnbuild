@@ -18,11 +18,10 @@ if "%1"=="unpack" goto EXIT
 
 :CONFIGURE
 set SVN_APACHE_DEPS=--with-httpd=%APDIR% --with-apr=%APDIR% --with-apr-util=%APDIR% --with-apr-iconv=%APDIR%
-set SVN_DEPS=--with-openssl=%INSDIR% --with-zlib=%INSDIR% --with-libintl=%INSDIR% --with-serf=%INSDIR%
-if "%VER_SQLITE%"=="" (set SVN_SQLITE_DEPS=) else set SVN_SQLITE_DEPS=--with-sqlite=%INSDIR%
+set SVN_DEPS=--with-openssl=%INSDIR% --with-zlib=%INSDIR% --with-libintl=%INSDIR% --with-serf=%INSDIR% --with-sqlite=%INSDIR%
 if "%VER_SASL%"=="" (set SVN_SASL_DEPS=) else set SVN_SASL_DEPS=--with-sasl=%INSDIR%
 if "%USE_DB%"=="" (set SVN_DB_DEPS=) else set SVN_DB_DEPS=--with-berkeley-db=%INSDIR%
-python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS% %SVN_DB_DEPS% %SVN_SASL_DEPS% %SVN_SQLITE_DEPS%
+python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS% %SVN_DB_DEPS% %SVN_SASL_DEPS%
 if "%1"=="configure" goto EXIT
 
 :COMPILE
