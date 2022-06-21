@@ -41,7 +41,8 @@ if "%1"=="compile" goto EXIT
 copy /y build\win32\make_dist.conf.template build\win32\make_dist.conf
 python build\win32\make_dist.py dist package
 xcopy package\dist\bin\* %INSDIR%\bin\ /s /e /q /h /r /y
-xcopy package\dist\share %INSDIR%\ /s /e /q /h /r /y
+mkdir %INSDIR%\share\locale
+xcopy package\dist\share\locale %INSDIR%\share\locale /s /e /q /h /r /y
 xcopy package\dist\lib\svn*.lib %INSDIR%\lib\ /s /e /q /h /r /y
 xcopy package\dist\lib\svn*.pdb %INSDIR%\lib\ /s /e /q /h /r /y
 xcopy package\dist\lib\libsvn*.lib %INSDIR%\lib\ /s /e /q /h /r /y
