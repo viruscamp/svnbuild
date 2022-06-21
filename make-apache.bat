@@ -12,7 +12,7 @@ xcopy %APDIR%\bin\libssl-*.dll %INSDIR%\bin /s /e /q /h /r /y
 
 @rem openssl-1.0 files needed by apr_crypto_openssl
 xcopy %APDIR%\bin\libeay32.dll %INSDIR%\bin /s /e /q /h /r /y
-xcopy %APDIR%\bin\ssleay32.dll.dll %INSDIR%\bin /s /e /q /h /r /y
+xcopy %APDIR%\bin\ssleay32.dll %INSDIR%\bin /s /e /q /h /r /y
 
 
 if exist %APDIR%\bin\iconv goto AP_BIN_ICONV
