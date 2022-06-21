@@ -7,6 +7,7 @@ cd subversion-%VER_SUBVERSION%
 if "%1"=="configure" goto CONFIGURE
 if "%1"=="compile" goto COMPILE
 if "%1"=="install" goto INSTALL
+if "%1"=="test" goto TEST
 
 :UNPACK
 rmdir /s /q subversion-%VER_SUBVERSION%
@@ -14,6 +15,7 @@ rmdir /s /q subversion-%VER_SUBVERSION%
 cd subversion-%VER_SUBVERSION%
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\subversion-db-without-apu.patch
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\subversion-gen-make-win-dep.patch
+patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\subversion-win32-make-dist.patch
 if "%1"=="unpack" goto EXIT
 
 :CONFIGURE
@@ -35,16 +37,27 @@ vcbuild subversion_vcnet.sln "Release|%TARGET_ARCH%"
 if "%1"=="compile" goto EXIT
 
 :INSTALL
-rem make dist
-mkdir %INSDIR%
-
-mkdir %INSDIR%\include
-
-mkdir %INSDIR%\lib
-
-mkdir %INSDIR%\bin
+@rem make dist
+copy /y build\win32\make_dist.conf.template build\win32\make_dist.conf
+python build\win32\make_dist.py dist package
+xcopy package\dist\bin\* %INSDIR%\bin\ /s /e /q /h /r /y
+xcopy package\dist\share %INSDIR%\ /s /e /q /h /r /y
+xcopy package\dist\lib\svn*.lib %INSDIR%\lib\ /s /e /q /h /r /y
+xcopy package\dist\lib\svn*.pdb %INSDIR%\lib\ /s /e /q /h /r /y
+xcopy package\dist\lib\libsvn*.lib %INSDIR%\lib\ /s /e /q /h /r /y
+xcopy package\dist\lib\libsvn*.pdb %INSDIR%\lib\ /s /e /q /h /r /y
 
 if "%1"=="install" goto EXIT
+
+goto EXIT
+:TEST
+setlocal
+set PATH=%INSDIR%\bin\;%PATH%
+mkdir Release\subversion\tests\cmdline
+xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
+python win-tests.py -c -r -v
+endlocal
+goto EXIT
 
 :EXIT
 cd %BUILDROOT%

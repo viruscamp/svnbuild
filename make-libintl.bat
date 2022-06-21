@@ -18,12 +18,12 @@ patch -d . -p 0 --binary -f -i %SOURCES_DIR%\patches\libintl-version.patch
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-nmake -f Makefile.msvc DLL=1 prefix=%INSDIR%
+nmake -f Makefile.msvc DLL=1 TARGET_ARCH=%TARGET_ARCH% prefix=%INSDIR%
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
 :INSTALL
-@rem nmake -f Makefile.msvc DLL=1 prefix=%INSDIR% install
+@rem nmake -f Makefile.msvc DLL=1 TARGET_ARCH=%TARGET_ARCH% prefix=%INSDIR% install
 mkdir %INSDIR%
 mkdir %INSDIR%\lib
 copy /y intl3_svn.lib %INSDIR%\lib

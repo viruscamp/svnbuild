@@ -1,6 +1,28 @@
 --- Makefile.msvc
 +++ Makefile.msvc
-@@ -103,7 +103,7 @@ OBJECTS = bindtextdom.obj dcgettext.obj dgettext.o
+@@ -31,6 +31,12 @@ PREFIX = c:\usr
+ !if !defined(IIPREFIX)
+ IIPREFIX = c:\\usr
+ !endif
++!if "$(TARGET_ARCH)"=="win32" || "$(TARGET_ARCH)"=="x86"
++OPTIMFLAGS_ARCH = -arch:IA32
++SUB_SYS_VER = 5.01
++!else
++SUB_SYS_VER = 5.02
++!endif
+ 
+ # Directories used by "make":
+ srcdir = .
+@@ -76,7 +81,7 @@ OPTIMFLAGS = -FD -O2 -EHsc -Zi
+ DEBUGFLAGS = -Zi
+ !else
+ # Some people prefer -O2 -G6 instead of -O1, but -O2 is not reliable in MSVC5.
+-OPTIMFLAGS = -D_NDEBUG -FD -O2 -EHsc -Zi -GL
++OPTIMFLAGS = -D_NDEBUG -FD -O2 -EHsc -Zi -GL $(OPTIMFLAGS_ARCH)
+ DEBUGFLAGS = -Zi
+ !endif
+ 
+@@ -103,7 +108,7 @@ OBJECTS = bindtextdom.obj dcgettext.obj dgettext.obj gettext.obj finddomain.obj
  
  RESOURCES = intl.res
  
@@ -9,7 +31,7 @@
  
  libgnuintl.h :
  !if !$(DLL)
-@@ -186,18 +186,20 @@ intl-compat.obj : $(srcdir)\intl-compat.c libgnuin
+@@ -186,18 +191,20 @@ intl-compat.obj : $(srcdir)\intl-compat.c libgnuintl.h $(srcdir)\gettextP.h $(sr
  
  !if !$(DLL)
  
@@ -26,7 +48,7 @@
 -intl3_tsvn.lib : $(OBJECTS) $(RESOURCES)
 -	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_tsvn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,5.02
 +intl3_svn.lib : $(OBJECTS) $(RESOURCES)
-+	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_svn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,5.02
++	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_svn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,$(SUB_SYS_VER)
 +	mt -nologo -manifest intl3_svn.dll.manifest compatibility.manifest.in /out:intl3_svn.dll.manifest
 +	mt -nologo -manifest intl3_svn.dll.manifest /outputresource:"intl3_svn.dll;#2"
  
@@ -36,7 +58,7 @@
  
  !endif
  
-@@ -211,10 +213,10 @@ install : all force
+@@ -211,10 +218,10 @@ install : all force
  	-mkdir $(exec_prefix)
  !if $(DLL)
  	-mkdir $(bindir)
@@ -49,7 +71,7 @@
  
  installdirs : force
  	-mkdir $(prefix)
-@@ -228,9 +230,9 @@ installdirs : force
+@@ -228,9 +235,9 @@ installdirs : force
  uninstall : force
  	$(RM) $(includedir)\libintl.h
  !if $(DLL)
@@ -61,7 +83,7 @@
  
  check : all
  
-@@ -245,6 +247,8 @@ clean : force
+@@ -245,6 +252,8 @@ clean : force
  	$(RM) *.dll
  	$(RM) intl.res
  	$(RM) core
@@ -72,15 +94,11 @@
  
 --- compatibility.manifest.in
 +++ compatibility.manifest.in
-@@ -0,0 +1,23 @@
+@@ -0,0 +1,19 @@
 +<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 +<asmv1:assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 +  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
 +    <application>
-+      <!-- Windows 10 -->
-+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
-+      <!-- Windows 8.1 -->
-+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}"/>
 +      <!-- Windows Vista -->
 +      <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/>
 +      <!-- Windows 7 -->

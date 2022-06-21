@@ -8,6 +8,8 @@ call %MAKE_DIR%\make-libintl.bat
 
 call %MAKE_DIR%\make-openssl.bat
 
+call %MAKE_DIR%\make-apache.bat
+
 call %MAKE_DIR%\make-serf.bat
 
 if "%USE_DB%"=="DB4" call %MAKE_DIR%\make-db4.bat

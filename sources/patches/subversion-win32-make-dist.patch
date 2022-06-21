@@ -1,0 +1,58 @@
+--- subversion-1.14.2/build/win32/make_dist.py
++++ subversion-1.14.2/build/win32/make_dist.py
+@@ -79,7 +79,10 @@ class Action:
+   def _copy_file(self, source, target):
+     print('copy: %s' % source)
+     print('  to: %s' % target)
+-    shutil.copyfile(source, target)
++    try:
++      shutil.copyfile(source, target)
++    except:
++      _stderr.write('failed to copy: %s\n' % source)
+ 
+ class File(Action):
+   def __init__(self, path, name=None):
+@@ -136,7 +139,7 @@ class InstallDocs(Action):
+       FileGlob(pattern).run(dir, cfg)
+     except:
+       os.chdir(old_cwd)
+-      raise
++      #raise
+     else:
+       os.chdir(old_cwd)
+ 
+@@ -164,7 +167,7 @@ class InstallIconv(Action):
+       _system(install)
+     except:
+       os.chdir(old_cwd)
+-      raise
++      #raise
+     else:
+       os.chdir(old_cwd)
+ 
+@@ -213,8 +216,14 @@ _disttree = {'': OptFile('%(readme)s', 'README.txt'),
+                      File('%(blddir)s/svnrdump/svnrdump.pdb'),
+                      File('%(blddir)s/svnmucc/svnmucc.exe'),
+                      File('%(blddir)s/svnmucc/svnmucc.pdb'),
+-                     File('%(blddir)s/../contrib/client-side/svn-push/svn-push.exe'),
+-                     File('%(blddir)s/../contrib/client-side/svn-push/svn-push.pdb'),
++                     File('%(blddir)s/svnbench/svnbench.exe'),
++                     File('%(blddir)s/svnbench/svnbench.pdb'),
++                     File('%(blddir)s/svnfsfs/svnfsfs.exe'),
++                     File('%(blddir)s/svnfsfs/svnfsfs.pdb'),
++                     File('%(blddir)s/../tools/client-side/svnconflict/svnconflict.exe'),
++                     File('%(blddir)s/../tools/client-side/svnconflict/svnconflict.pdb'),
++                     File('%(blddir)s/../tools/client-side/svn-mergeinfo-normalizer/svn-mergeinfo-normalizer.exe'),
++                     File('%(blddir)s/../tools/client-side/svn-mergeinfo-normalizer/svn-mergeinfo-normalizer.pdb'),
+                      File('%(blddir)s/../tools/server-side/svnauthz.exe'),
+                      File('%(blddir)s/../tools/server-side/svnauthz.pdb'),
+                      File('%(blddir)s/../tools/server-side/svnauthz-validate.exe'),
+@@ -227,6 +236,8 @@ _disttree = {'': OptFile('%(readme)s', 'README.txt'),
+                      File('%(blddir)s/mod_dav_svn/mod_dav_svn.pdb'),
+                      File('%(blddir)s/mod_authz_svn/mod_authz_svn.so'),
+                      File('%(blddir)s/mod_authz_svn/mod_authz_svn.pdb'),
++                     File('%(blddir)s/../tools/server-side/mod_dontdothat/mod_dontdothat.so'),
++                     File('%(blddir)s/../tools/server-side/mod_dontdothat/mod_dontdothat.pdb'),
+                      FileGlob('%(blddir)s/libsvn_*/libsvn_*.dll'),
+                      FileGlob('%(blddir)s/libsvn_*/libsvn_*.pdb'),
+                      File('%(@apr)s/%(aprrel)s/libapr-1.dll'),
