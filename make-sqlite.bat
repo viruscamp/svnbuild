@@ -1,28 +1,20 @@
 if "%VER_SQLITE%"=="" set VER_SQLITE=3380500
-if "%VER_SQLITE_SNAPSHOT%"=="" set VER_SQLITE_SNAPSHOT=202205231057
 
 if "%1"=="" goto UNPACK
 if "%1"=="unpack" goto UNPACK
-if not exist sqlite-%VER_SQLITE% goto UNPACK
+if not exist sqlite-amalgamation-%VER_SQLITE% goto UNPACK
 cd sqlite-%VER_SQLITE%
 if "%1"=="compile" goto COMPILE
 if "%1"=="install" goto INSTALL
 
 :UNPACK
-rmdir /s /q sqlite-snapshot-%VER_SQLITE_SNAPSHOT%
 rmdir /s /q sqlite-amalgamation-%VER_SQLITE%
-rmdir /s /q sqlite-%VER_SQLITE%
 7z x %SOURCES_DIR%\sqlite-amalgamation-%VER_SQLITE%.zip -aoa -tzip -o.
-7z x %SOURCES_DIR%\sqlite-snapshot-%VER_SQLITE_SNAPSHOT%.tar.gz -so | 7z x -aoa -si -ttar -o.
-mkdir sqlite-%VER_SQLITE%
-copy /y sqlite-snapshot-%VER_SQLITE_SNAPSHOT%\Makefile.msc sqlite-%VER_SQLITE%\
-copy /y sqlite-snapshot-%VER_SQLITE_SNAPSHOT%\Replace.cs sqlite-%VER_SQLITE%\
-copy /y sqlite-snapshot-%VER_SQLITE_SNAPSHOT%\sqlite3.rc sqlite-%VER_SQLITE%\
-copy /y sqlite-snapshot-%VER_SQLITE_SNAPSHOT%\sqlite3rc.h sqlite-%VER_SQLITE%\
-copy /y sqlite-amalgamation-%VER_SQLITE%\*.*  sqlite-%VER_SQLITE%\
-rmdir /s /q sqlite-snapshot-%VER_SQLITE_SNAPSHOT%
-rmdir /s /q sqlite-amalgamation-%VER_SQLITE%
-cd sqlite-%VER_SQLITE%
+copy /y %SOURCES_DIR%\sqlite3-winmakefiles\Makefile.msc sqlite-amalgamation-%VER_SQLITE%\
+copy /y %SOURCES_DIR%\sqlite3-winmakefiles\Replace.cs sqlite-amalgamation-%VER_SQLITE%\
+copy /y %SOURCES_DIR%\sqlite3-winmakefiles\sqlite3.rc sqlite-amalgamation-%VER_SQLITE%\
+copy /y %SOURCES_DIR%\sqlite3-winmakefiles\sqlite3rc.h sqlite-amalgamation-%VER_SQLITE%\
+cd sqlite-amalgamation-%VER_SQLITE%
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
