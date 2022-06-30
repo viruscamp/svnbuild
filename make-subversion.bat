@@ -56,7 +56,7 @@ setlocal
 set PATH=%INSDIR%\bin\;%PATH%
 mkdir Release\subversion\tests\cmdline
 xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
-python win-tests.py -c -r -v
+python win-tests.py -c -r -v --httpd-dir=%APDIR%
 endlocal
 goto EXIT
 
