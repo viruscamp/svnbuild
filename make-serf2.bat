@@ -30,7 +30,10 @@ if "%1"=="install" goto EXIT
 
 goto EXIT
 :TEST
+setlocal
+set PATH=%INSDIR%\bin\;%PATH%
 %SCONSCMD% check
+endlocal
 goto EXIT
 
 :EXIT
