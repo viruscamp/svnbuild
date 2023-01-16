@@ -1,0 +1,14 @@
+work32
+work64
+worklive
+workxp
+x86
+x64
+win32
+win64
+
+tools/bin
+tools/gettext-0.14.4-bin
+tools/perl
+tools/python
+tools/scons-local

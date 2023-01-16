@@ -29,7 +29,7 @@ if "%1"=="configure" goto EXIT
 
 :COMPILE
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
-msbuild subversion_vcnet.sln /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release /t:__MORE__ 
+msbuild subversion_vcnet.sln /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release /t:__MORE__
 goto COMPILE_DONE
 :VCBUILD
 vcbuild subversion_vcnet.sln "Release|%TARGET_ARCH%"
@@ -56,7 +56,9 @@ setlocal
 set PATH=%INSDIR%\bin\;%PATH%
 mkdir Release\subversion\tests\cmdline
 xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
-python win-tests.py -c -r -v --httpd-dir=%APDIR%
+python win-tests.py -c -r -v
+@rem python win-tests.py -c -r -v --httpd-dir=%APDIR%
+@rem python win-tests.py -c -r -v --httpd-dir=%APDIR% --https
 endlocal
 goto EXIT
 

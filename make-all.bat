@@ -10,7 +10,7 @@ call %MAKE_DIR%\make-openssl.bat
 
 call %MAKE_DIR%\make-apache.bat
 
-call %MAKE_DIR%\make-serf.bat
+if "%VER_SERF%" geq "2.0.0" ( call %MAKE_DIR%\make-serf2.bat ) else ( call %MAKE_DIR%\make-serf.bat )
 
 if "%USE_DB%"=="DB4" call %MAKE_DIR%\make-db4.bat
 if "%USE_DB%"=="DB5" call %MAKE_DIR%\make-db5.bat
