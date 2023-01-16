@@ -23,7 +23,7 @@ set SVN_APACHE_DEPS=--with-httpd=%APDIR% --with-apr=%APDIR% --with-apr-util=%APD
 set SVN_DEPS=--with-openssl=%INSDIR% --with-zlib=%INSDIR% --with-libintl=%INSDIR% --with-serf=%INSDIR% --with-sqlite=%INSDIR%
 if "%VER_SASL%"=="" (set SVN_SASL_DEPS=) else set SVN_SASL_DEPS=--with-sasl=%INSDIR%
 if "%USE_DB%"=="" (set SVN_DB_DEPS=) else set SVN_DB_DEPS=--with-berkeley-db=%INSDIR%
-if "%USE_SHARED_SERF%"=="1" (set SVN_SHARED_SERF=--with-shared-serf) else (set SVN_SHARED_SERF=)
+if "%USE_SHARED_SERF%"=="" (set SVN_SHARED_SERF=) else (set SVN_SHARED_SERF=--with-shared-serf)
 python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS% %SVN_DB_DEPS% %SVN_SASL_DEPS% %SVN_SHARED_SERF%
 if "%1"=="configure" goto EXIT
 

@@ -30,8 +30,8 @@ set VER_OPENSSL=1.1.1s
 @rem set VER_SERF=1.3.9
 set VER_SERF=2.0.0
 
-@rem set USE_SHARED_SERF=1 to used libserf-1.dll
-set USE_SHARED_SERF=2
+@rem set USE_SHARED_SERF=yes to used libserf-*.dll
+set USE_SHARED_SERF=1
 
 @rem set USE_DB=
 set USE_DB=DB5
