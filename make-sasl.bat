@@ -12,6 +12,7 @@ rmdir /s /q cyrus-sasl-%VER_SASL%
 7z x %SOURCES_DIR%\cyrus-sasl-%VER_SASL%.tar.gz -so | 7z x -aoa -si -ttar -o.
 cd cyrus-sasl-%VER_SASL%
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\cyrus-sasl-2.1.28-pull-732.patch
+patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\cyrus-sasl-2.1.28-windllmain.patch
 @rem some old VC like VC2010 do not treat include paths priority correct, it may use include\md5global.h 
 copy /y win32\include\md5global.h include\
 if "%1"=="unpack" goto EXIT

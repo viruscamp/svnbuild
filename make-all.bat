@@ -1,9 +1,13 @@
+setlocal
 set MAKE_DIR=%~dp0
 
 call %MAKE_DIR%\env.bat
 
+@rem static lib
 call %MAKE_DIR%\make-zlib.bat
-call %MAKE_DIR%\make-sqlite.bat
+@rem source
+call %MAKE_DIR%\make-sqlite.bat unpack
+
 call %MAKE_DIR%\make-libintl.bat
 
 call %MAKE_DIR%\make-openssl.bat
@@ -18,3 +22,4 @@ if "%USE_DB%"=="DB5" call %MAKE_DIR%\make-db5.bat
 if not "%VER_SASL%"=="" call %MAKE_DIR%\make-sasl.bat
 
 call %MAKE_DIR%\make-subversion.bat
+endlocal

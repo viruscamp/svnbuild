@@ -1,0 +1,58 @@
+Add DllMain to libsasl.dll that will set plugin path to dll path, to make sasl a portableapp.
+--- cyrus-sasl-2.1.28.orig/lib/NTMakefile
++++ cyrus-sasl-2.1.28/lib/NTMakefile
+@@ -14,6 +14,9 @@
+ 
+ CPPFLAGS = /wd4996 /D NEED_GETOPT /I "..\win32\include" /I "." /I "..\include" /D "LIBSASL_EXPORTS" $(COMMON_CPPFLAGS)
+ 
++libsasl_objs = $(libsasl_objs) windllmain.obj
++windllmain.obj: ..\include\sasl.h
++
+ !IF $(TARGET_WIN_SYSTEM) >= 51
+ CPPFLAGS = /D TARGET_WIN_SYSTEM=$(TARGET_WIN_SYSTEM) $(CPPFLAGS)
+ !ENDIF 
+--- cyrus-sasl-2.1.28.orig/lib/windllmain.c
++++ cyrus-sasl-2.1.28/lib/windllmain.c
+@@ -0,0 +1,42 @@
++#include <config.h>
++#include <sasl.h>
++
++#ifdef WIN32
++BOOL sasl_set_path_plugin_from_dll_path(HANDLE hModule);
++
++BOOL APIENTRY DllMain( HANDLE hModule, 
++                       DWORD  ul_reason_for_call, 
++                       LPVOID lpReserved
++                     )
++{
++    switch (ul_reason_for_call)
++    {
++        case DLL_PROCESS_ATTACH:
++            sasl_set_path_plugin_from_dll_path(hModule);
++            break;
++        case DLL_THREAD_ATTACH:
++        case DLL_THREAD_DETACH:
++        case DLL_PROCESS_DETACH:
++            break;
++    }
++    return TRUE;
++}
++
++BOOL sasl_set_path_plugin_from_dll_path(HANDLE hModule)
++{
++    char pathbuff[MAX_PATH];
++    char* p_last_path_seprator;
++    if(!GetModuleFileName(hModule, pathbuff, MAX_PATH)) {
++        return FALSE;
++    }
++    p_last_path_seprator = strrchr(pathbuff, '\\');
++    if (p_last_path_seprator == NULL) {
++        return FALSE;
++    }
++    *p_last_path_seprator = '\0';
++    if (sasl_set_path(SASL_PATH_TYPE_PLUGIN, pathbuff) != SASL_OK) {
++        return FALSE;
++    }
++    return TRUE;
++}
++#endif

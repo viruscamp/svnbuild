@@ -29,16 +29,26 @@ if "%1"=="compile" goto EXIT
 
 :INSTALL
 mkdir %INSDIR%
+mkdir out
 
 mkdir %INSDIR%\include
 copy /y build_windows\*.h %INSDIR%\include
+mkdir out\include
+copy /y build_windows\*.h out\include
 
 mkdir %INSDIR%\lib
 copy /y build_windows\%TARGET_ARCH%\Release\libdb*.lib %INSDIR%\lib
+copy /y build_windows\%TARGET_ARCH%\Release\libdb*.exp %INSDIR%\lib
+mkdir out\lib
+copy /y build_windows\%TARGET_ARCH%\Release\libdb*.lib out\lib
+copy /y build_windows\%TARGET_ARCH%\Release\libdb*.exp out\lib
 
 mkdir %INSDIR%\bin
 copy /y build_windows\%TARGET_ARCH%\Release\libdb*.dll %INSDIR%\bin
 copy /y build_windows\%TARGET_ARCH%\Release\libdb*.pdb %INSDIR%\bin
+mkdir out\bin
+copy /y build_windows\%TARGET_ARCH%\Release\libdb*.dll out\bin
+copy /y build_windows\%TARGET_ARCH%\Release\libdb*.pdb out\bin
 if "%1"=="install" goto EXIT
 
 :EXIT

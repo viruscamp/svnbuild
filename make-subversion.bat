@@ -19,12 +19,15 @@ patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\subversion-win32-make-dist.
 if "%1"=="unpack" goto EXIT
 
 :CONFIGURE
+if "%USE_DB%"=="DB4" (set VER_DB=%VER_DB4%)
+if "%USE_DB%"=="DB5" (set VER_DB=%VER_DB5%)
 set SVN_APACHE_DEPS=--with-httpd=%APDIR% --with-apr=%APDIR% --with-apr-util=%APDIR% --with-apr-iconv=%APDIR%
-set SVN_DEPS=--with-openssl=%INSDIR% --with-zlib=%INSDIR% --with-libintl=%INSDIR% --with-serf=%INSDIR% --with-sqlite=%INSDIR%
+set SVN_DEPS_SHARED=--with-openssl=%INSDIR% --with-libintl=%INSDIR% --with-serf=%BUILDROOT%\serf-%VER_SERF%
+set SVN_DEPS_STATIC=--with-zlib=%BUILDROOT%\zlib-%VER_ZLIB% --with-sqlite=%BUILDROOT%\sqlite-amalgamation-%VER_SQLITE%
 if "%VER_SASL%"=="" (set SVN_SASL_DEPS=) else set SVN_SASL_DEPS=--with-sasl=%INSDIR%
-if "%USE_DB%"=="" (set SVN_DB_DEPS=) else set SVN_DB_DEPS=--with-berkeley-db=%INSDIR%
+if "%USE_DB%"=="" (set SVN_DB_DEPS=) else set SVN_DB_DEPS=--with-berkeley-db=%BUILDROOT%\db-%VER_DB%\out
 if "%USE_SHARED_SERF%"=="" (set SVN_SHARED_SERF=) else (set SVN_SHARED_SERF=--with-shared-serf)
-python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS% %SVN_DB_DEPS% %SVN_SASL_DEPS% %SVN_SHARED_SERF%
+python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS_SHARED% %SVN_DEPS_STATIC% %SVN_DB_DEPS% %SVN_SASL_DEPS% %SVN_SHARED_SERF%
 if "%1"=="configure" goto EXIT
 
 :COMPILE
