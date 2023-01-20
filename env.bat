@@ -22,6 +22,15 @@ if "%MSVC_VERSION%"=="2019" set MSVC_PLATFORMTOOLSET=v142
 if "%MSVC_VERSION%"=="2022" set MSVC_PLATFORMTOOLSET=v143
 :MSVC_PLATFORMTOOLSET_DONE
 
+set _CL_=
+if not "%TARGET_WIN32_WINNT%"=="" (set _CL_=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
+
+set _LINK_=
+if "%TARGET_SUBSYSTEM%"=="" goto SET_LINK_DONE
+set _LINK_=-subsystem:console,%TARGET_SUBSYSTEM%
+if "%_CL_%"=="" (set _CL_=-link %_LINK_%) else (set _CL_=%_CL_% -link %_LINK_%)
+:SET_LINK_DONE
+
 @rem gettext
 set PATH=%TOOLS_DIR%\gettext-0.14.4-bin\bin;%PATH%
 

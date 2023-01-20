@@ -18,6 +18,8 @@ if "%1"=="unpack" goto EXIT
 if "%TARGET_WIN32_WINNT%"=="" (set MY_CFLAGS=) else (set MY_CFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
 if "%TARGET_SUBSYSTEM%"=="" (set MY_LDFLAGS=) else (set MY_LDFLAGS=-subsystem:console,%TARGET_SUBSYSTEM%)
 nmake -f win32\Makefile.msc
+set MY_CFLAGS=
+set MY_LDFLAGS=
 if "%1"=="compile" goto EXIT
 
 :INSTALL

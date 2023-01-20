@@ -12,11 +12,17 @@ if "%1"=="test" goto TEST
 rmdir /s /q serf-%VER_SERF%
 7z x %SOURCES_DIR%\serf-%VER_SERF%.zip -aoa -tzip -o.
 cd serf-%VER_SERF%
+patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\serf-2.0.0-scons.patch
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-%SCONSCMD% PREFIX=%INSDIR% LIBDIR=%INSDIR%\lib APR=%APDIR% APU=%APDIR% OPENSSL=%INSDIR% ZLIB=%INSDIR% CFLAGS="/I%INSDIR%\include" LINKFLAGS="/LIBPATH:%INSDIR%\lib /LIBPATH:%APDIR%\lib" TARGET_ARCH=%TARGET_ARCH%
+@rem _CL_ _LINK_ are invalid for scons
+if "%TARGET_WIN32_WINNT%"=="" (set MY_CFLAGS=) else (set MY_CFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
+if "%TARGET_SUBSYSTEM%"=="" (set MY_LDFLAGS=) else (set MY_LDFLAGS=-subsystem:console,%TARGET_SUBSYSTEM%)
+%SCONSCMD% PREFIX=%INSDIR% LIBDIR=%INSDIR%\lib APR=%APDIR% APU=%APDIR% OPENSSL=%INSDIR% ZLIB=%INSDIR% CFLAGS="%MY_CFLAGS% /I%INSDIR%\include" LINKFLAGS="%MY_LDFLAGS% /LIBPATH:%INSDIR%\lib /LIBPATH:%APDIR%\lib" TARGET_ARCH=%TARGET_ARCH%
+set MY_CFLAGS=
+set MY_LDFLAGS=
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 

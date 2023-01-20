@@ -21,6 +21,8 @@ if "%1"=="unpack" goto EXIT
 if "%TARGET_WIN32_WINNT%"=="" (set OPTS=) else (set OPTS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
 if "%TARGET_SUBSYSTEM%"=="" (set LDOPTS=) else (set LDOPTS=-subsystem:console,%TARGET_SUBSYSTEM%)
 nmake -f Makefile.msc DYNAMIC_SHELL=1
+set OPTS=
+set LDOPTS=
 if "%1"=="compile" goto EXIT
 
 :INSTALL

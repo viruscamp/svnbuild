@@ -19,20 +19,18 @@ patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.pa
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-if "%TARGET_ARCH%"=="win32" goto COMPILE_WIN32
-if "%TARGET_ARCH%"=="x64" goto COMPILE_X64
+set OPENSSL_TARGET=
+if "%TARGET_ARCH%"=="win32" (set OPENSSL_TARGET=VC-WIN32)
+if "%TARGET_ARCH%"=="x86" (set OPENSSL_TARGET=VC-WIN32)
+if "%TARGET_ARCH%"=="x64" (set OPENSSL_TARGET=VC-WIN64A)
+if "%TARGET_WIN32_WINNT%"=="" (set CPPFLAGS=) else (set CPPFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
+if "%TARGET_SUBSYSTEM%"=="" (set LDFLAGS=) else (set LDFLAGS=-subsystem:console,%TARGET_SUBSYSTEM%)
 
-:COMPILE_WIN32
-perl Configure VC-WIN32 -D_WIN32_WINNT=0x0501 --prefix=%INSDIR%
+perl Configure %OPENSSL_TARGET% --prefix=%INSDIR%
+set OPENSSL_TARGET=
+set CPPFLAGS=
+set LDFLAGS=
 nmake
-goto COMPILE_DONE
-
-:COMPILE_X64
-perl Configure VC-WIN64A --prefix=%INSDIR%
-nmake
-goto COMPILE_DONE
-
-:COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
 :INSTALL

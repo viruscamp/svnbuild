@@ -32,10 +32,14 @@ if "%1"=="configure" goto EXIT
 
 :COMPILE
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
+
+:MSBUILD
 msbuild subversion_vcnet.sln /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release /t:__MORE__
 goto COMPILE_DONE
+
 :VCBUILD
 vcbuild subversion_vcnet.sln "Release|%TARGET_ARCH%"
+
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 
