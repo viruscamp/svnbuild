@@ -1,28 +1,15 @@
 --- Makefile.msvc
 +++ Makefile.msvc
-@@ -31,6 +31,12 @@ PREFIX = c:\usr
- !if !defined(IIPREFIX)
- IIPREFIX = c:\\usr
- !endif
-+!if "$(TARGET_ARCH)"=="win32" || "$(TARGET_ARCH)"=="x86"
-+OPTIMFLAGS_ARCH = -arch:IA32
-+SUB_SYS_VER = 5.01
-+!else
-+SUB_SYS_VER = 5.02
-+!endif
- 
- # Directories used by "make":
- srcdir = .
-@@ -76,7 +81,7 @@ OPTIMFLAGS = -FD -O2 -EHsc -Zi
- DEBUGFLAGS = -Zi
- !else
- # Some people prefer -O2 -G6 instead of -O1, but -O2 is not reliable in MSVC5.
--OPTIMFLAGS = -D_NDEBUG -FD -O2 -EHsc -Zi -GL
-+OPTIMFLAGS = -D_NDEBUG -FD -O2 -EHsc -Zi -GL $(OPTIMFLAGS_ARCH)
+@@ -80,7 +80,7 @@ OPTIMFLAGS = -D_NDEBUG -FD -O2 -EHsc -Zi -GL
  DEBUGFLAGS = -Zi
  !endif
  
-@@ -103,7 +108,7 @@ OBJECTS = bindtextdom.obj dcgettext.obj dgettext.obj gettext.obj finddomain.obj
+-CFLAGS = $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DLOCALEDIR=\"$(IIlocaledir)\" -DLOCALE_ALIAS_PATH=\"$(IIaliaspath)\" -DIN_LIBINTL -DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(IIbindir)\" -DNO_XMALLOC -Dset_relocation_prefix=libintl_set_relocation_prefix -Drelocate=libintl_relocate -DDEPENDS_ON_LIBICONV=0 -D_USING_V110_SDK71_
++CFLAGS = $(MY_CFLAGS) $(MFLAGS) $(WARN_CFLAGS) $(OPTIMFLAGS) -DHAVE_CONFIG_H -DLOCALEDIR=\"$(IIlocaledir)\" -DLOCALE_ALIAS_PATH=\"$(IIaliaspath)\" -DIN_LIBINTL -DENABLE_RELOCATABLE=1 -DIN_LIBRARY -DINSTALLDIR=\"$(IIbindir)\" -DNO_XMALLOC -Dset_relocation_prefix=libintl_set_relocation_prefix -Drelocate=libintl_relocate -DDEPENDS_ON_LIBICONV=0 -D_USING_V110_SDK71_
+ 
+ INCLUDES = -I. -I.. -I$(includedir)
+ 
+@@ -103,7 +103,7 @@ OBJECTS = bindtextdom.obj dcgettext.obj dgettext.obj gettext.obj finddomain.obj
  
  RESOURCES = intl.res
  
@@ -31,7 +18,7 @@
  
  libgnuintl.h :
  !if !$(DLL)
-@@ -186,18 +191,20 @@ intl-compat.obj : $(srcdir)\intl-compat.c libgnuintl.h $(srcdir)\gettextP.h $(sr
+@@ -186,18 +186,20 @@ intl-compat.obj : $(srcdir)\intl-compat.c libgnuintl.h $(srcdir)\gettextP.h $(sr
  
  !if !$(DLL)
  
@@ -48,7 +35,7 @@
 -intl3_tsvn.lib : $(OBJECTS) $(RESOURCES)
 -	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_tsvn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,5.02
 +intl3_svn.lib : $(OBJECTS) $(RESOURCES)
-+	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_svn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST /SUBSYSTEM:WINDOWS,$(SUB_SYS_VER)
++	$(CC) $(MFLAGS) $(DEBUGFLAGS) -LD $(OBJECTS) $(RESOURCES) -Feintl3_svn.dll /link /INCREMENTAL:NO /NOLOGO /RELEASE /LTCG /MANIFEST $(MY_LDFLAGS)
 +	mt -nologo -manifest intl3_svn.dll.manifest compatibility.manifest.in /out:intl3_svn.dll.manifest
 +	mt -nologo -manifest intl3_svn.dll.manifest /outputresource:"intl3_svn.dll;#2"
  
@@ -58,7 +45,7 @@
  
  !endif
  
-@@ -211,10 +218,10 @@ install : all force
+@@ -211,10 +213,10 @@ install : all force
  	-mkdir $(exec_prefix)
  !if $(DLL)
  	-mkdir $(bindir)
@@ -71,7 +58,7 @@
  
  installdirs : force
  	-mkdir $(prefix)
-@@ -228,9 +235,9 @@ installdirs : force
+@@ -228,9 +230,9 @@ installdirs : force
  uninstall : force
  	$(RM) $(includedir)\libintl.h
  !if $(DLL)
@@ -83,7 +70,7 @@
  
  check : all
  
-@@ -245,6 +252,8 @@ clean : force
+@@ -245,6 +247,8 @@ clean : force
  	$(RM) *.dll
  	$(RM) intl.res
  	$(RM) core

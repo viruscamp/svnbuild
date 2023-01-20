@@ -11,6 +11,10 @@ set BUILDROOT=%cd%
 
 @rem win32 x64
 set TARGET_ARCH=x64
+@rem append CFLAGS -D_WIN32_WINNT=%TARGET_WIN32_WINNT%
+@rem set TARGET_WIN32_WINNT=0x0501
+@rem append LDFLAGS -subsystem:console,%TARGET_SUBSYSTEM%
+@rem set TARGET_SUBSYSTEM=5.01
 
 set INSDIR=%BUILDROOT%\%TARGET_ARCH%
 

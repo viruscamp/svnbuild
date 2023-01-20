@@ -1,0 +1,14 @@
+--- zlib-1.2.13.orig/win32/Makefile.msc
++++ zlib-1.2.13/win32/Makefile.msc
+@@ -23,9 +23,11 @@ LD = link
+ AR = lib
+ RC = rc
+ CFLAGS  = -nologo -MD -W3 -O2 -Oy- -Zi -Fd"zlib" $(LOC)
++CFLAGS = $(MY_CFLAGS) $(CFLAGS)
+ WFLAGS  = -D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE
+ ASFLAGS = -coff -Zi $(LOC)
+ LDFLAGS = -nologo -debug -incremental:no -opt:ref
++LDFLAGS = $(MY_LDFLAGS) $(LDFLAGS)
+ ARFLAGS = -nologo
+ RCFLAGS = /dWIN32 /r
+ 
