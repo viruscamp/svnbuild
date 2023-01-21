@@ -63,9 +63,11 @@ setlocal
 set PATH=%INSDIR%\bin\;%PATH%
 mkdir Release\subversion\tests\cmdline
 xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
-python win-tests.py -c -r -v
-@rem python win-tests.py -c -r -v --httpd-dir=%APDIR%
-@rem python win-tests.py -c -r -v --httpd-dir=%APDIR% --https
+set TEST_METHOD=
+if "%2"=="http" set TEST_METHOD=--httpd-dir=%APDIR%
+if "%2"=="https" set TEST_METHOD=--httpd-dir=%APDIR% --https
+if "%2"=="sasl" set TEST_METHOD=--enable-sasl
+python win-tests.py -c -r -v %TEST_METHOD%
 endlocal
 goto EXIT
 
