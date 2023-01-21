@@ -18,11 +18,7 @@ patch -d . -p 0 --binary -f -i %SOURCES_DIR%\patches\libintl-version.patch
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-if "%TARGET_WIN32_WINNT%"=="" (set MY_CFLAGS=) else (set MY_CFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
-if "%TARGET_SUBSYSTEM%"=="" (set MY_LDFLAGS=) else (set MY_LDFLAGS=-subsystem:windows,%TARGET_SUBSYSTEM%)
 nmake -f Makefile.msvc DLL=1 prefix=%INSDIR%
-set MY_CFLAGS=
-set MY_LDFLAGS=
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
 

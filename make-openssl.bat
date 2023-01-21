@@ -4,6 +4,7 @@ if "%1"=="" goto UNPACK
 if "%1"=="unpack" goto UNPACK
 if not exist openssl-%VER_OPENSSL% goto UNPACK
 cd openssl-%VER_OPENSSL%
+if "%1"=="configure" goto CONFIGURE
 if "%1"=="compile" goto COMPILE
 if "%1"=="install" goto INSTALL
 if "%1"=="test" goto TEST
@@ -18,18 +19,16 @@ patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.pa
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
 
-:COMPILE
+:CONFIGURE
 set OPENSSL_TARGET=
 if "%TARGET_ARCH%"=="win32" (set OPENSSL_TARGET=VC-WIN32)
 if "%TARGET_ARCH%"=="x86" (set OPENSSL_TARGET=VC-WIN32)
 if "%TARGET_ARCH%"=="x64" (set OPENSSL_TARGET=VC-WIN64A)
-if "%TARGET_WIN32_WINNT%"=="" (set CPPFLAGS=) else (set CPPFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
-if "%TARGET_SUBSYSTEM%"=="" (set LDFLAGS=) else (set LDFLAGS=-subsystem:console,%TARGET_SUBSYSTEM%)
-
 perl Configure %OPENSSL_TARGET% --prefix=%INSDIR%
 set OPENSSL_TARGET=
-set CPPFLAGS=
-set LDFLAGS=
+if "%1"=="configure" goto EXIT
+
+:COMPILE
 nmake
 if "%1"=="compile" goto EXIT
 

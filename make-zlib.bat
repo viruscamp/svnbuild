@@ -11,15 +11,10 @@ if "%1"=="install" goto INSTALL
 rmdir /s /q zlib-%VER_ZLIB%
 7z x %SOURCES_DIR%\zlib-%VER_ZLIB%.tar.gz -so | 7z x -aoa -si -ttar -o.
 cd zlib-%VER_ZLIB%
-patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\zlib-win32-makefile-cmd-macro.patch
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-if "%TARGET_WIN32_WINNT%"=="" (set MY_CFLAGS=) else (set MY_CFLAGS=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%)
-if "%TARGET_SUBSYSTEM%"=="" (set MY_LDFLAGS=) else (set MY_LDFLAGS=-subsystem:console,%TARGET_SUBSYSTEM%)
 nmake -f win32\Makefile.msc
-set MY_CFLAGS=
-set MY_LDFLAGS=
 if "%1"=="compile" goto EXIT
 
 :INSTALL
