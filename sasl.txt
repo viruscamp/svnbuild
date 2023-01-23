@@ -1,0 +1,91 @@
+[HKEY_LOCAL_MACHINE\SOFTWARE\Carnegie Mellon\Project Cyrus\SASL Library]
+SearchPath = C:\sals2\bin
+ConfFile = C:\sals2\config
+
+载入 libsasl.dll 后会按上面的 SearchPath 查找插件, 
+saslANONYMOUS.dll
+saslCRAMMD5.dll
+saslDIGESTMD5.dll
+saslLOGIN.dll
+saslNTLM.dll
+saslOTP.dll
+saslPASSDSS.dll
+saslPLAIN.dll
+saslSASLDB.dll
+saslSCRAM.dll
+saslSRP.dll
+
+程序可能调用 set_path 替换注册表的 SearchPath , 比如我的改版就从 libsasl.dll 所在目录查找。
+
+程序初始化 sasl 时需传入 appname , 其后会按上面的 ConfFile 载入配置文件
+C:\sals2\config\{appname}.conf
+svnserve.exe 使用的是 appname 是 svn
+
+大多数插件为加密算法
+auxprop 可以存储用户名密码 配合 加密算法 可以设置验证用户名密码
+至少 ldap ntlm 可以验证用户名密码
+
+某种配置
+pwcheck_method: auxprop
+auxprop_plugin: sasldb
+mech_list: DIGEST-MD5
+sasldb_path: C:\TortoiseSVN\sasldb
+
+设置用户名与密码 见 win-tests.py 的 _create_users_file
+saslpasswd2.exe -c -f "C:\TortoiseSVN\sasldb" -u TestRealm john.smith
+
+
+win-tests.py 会自动创建版本库与配置文件 svnserve.conf
+svnserver -d -r C:\TestSASL\SvnRoot
+
+C:\TestSASL\SvnRoot\{repo1}\conf\svnserve.conf
+
+[general]
+auth-access = write
+realm = svntest
+[sasl]
+use-sasl = true
+
+如何调用? 另一种配置创建了 groups 和 authz
+write_restrictive_svnserve_conf
+
+但似乎没有设置 groups ?
+groups-db = groups
+authz-db = authz
+authz 可以包含 groups-db 的内容
+对应 C:\TestSASL\SvnRoot\{repo1}\conf\authz
+
+[groups]
+calc-developers = harry, sally, joe
+paint-developers = frank, sally, jane
+everyone = harry, sally, joe, frank, jane
+
+[calc:/projects/calc]
+@calc-developers = rw
+
+[paint:/projects/paint]
+jane = r
+@paint-developers = rw
+
+
+明文用户名密码配置 与 use-sasl 冲突
+password-db = passwd
+对应 C:\TestSASL\SvnRoot\{repo1}\conf\passwd
+
+[users]
+jrandom = rayjandom
+jconstant = rayjandom
+
+
+saslpasswd2 -a svn -u svntest -c jrandom
+rayjandom
+saslpasswd2 -a svn -u svntest -c jconstant
+rayjandom
+saslpasswd2 -a svn -u svntest -c __dumpster__
+__loadster__
+saslpasswd2 -a svn -u svntest -c JRANDOM
+rayjandom
+saslpasswd2 -a svn -u svntest -c JCONSTANT
+rayjandom
+
+sasldblistusers2.exe -f D:\svnbuild\workxp\win32\etc\sasl2\sasldb
