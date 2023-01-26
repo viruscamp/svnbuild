@@ -24,6 +24,12 @@ if "%1"=="compile" goto EXIT
 :INSTALL
 mkdir %INSDIR%
 
+mkdir %INSDIR%\bin
+copy /y sqlite3.dll %INSDIR%\bin
+copy /y sqlite3.pdb %INSDIR%\bin
+copy /y sqlite3.exe %INSDIR%\bin
+copy /y sqlite3sh.pdb %INSDIR%\bin
+
 mkdir %INSDIR%\include
 copy /y sqlite3.h %INSDIR%\include
 copy /y sqlite3ext.h %INSDIR%\include
@@ -32,11 +38,6 @@ mkdir %INSDIR%\lib
 copy /y sqlite3.lib %INSDIR%\lib
 copy /y sqlite3.lo %INSDIR%\lib
 
-mkdir %INSDIR%\bin
-copy /y sqlite3.dll %INSDIR%\bin
-copy /y sqlite3.pdb %INSDIR%\bin
-copy /y sqlite3.exe %INSDIR%\bin
-copy /y sqlite3sh.pdb %INSDIR%\bin
 if "%1"=="install" goto EXIT
 
 :EXIT

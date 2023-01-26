@@ -20,6 +20,10 @@ if "%1"=="compile" goto EXIT
 :INSTALL
 mkdir %INSDIR%
 
+@rem mkdir %INSDIR%\bin
+@rem copy /y zlib1.dll %INSDIR%\bin
+@rem copy /y zlib1.pdb %INSDIR%\bin
+
 mkdir %INSDIR%\include
 copy /y zconf.h %INSDIR%\include
 copy /y zlib.h %INSDIR%\include
@@ -28,9 +32,10 @@ mkdir %INSDIR%\lib
 copy /y zlib.lib %INSDIR%\lib
 @rem copy /y zdll.lib %INSDIR%\lib
 
-@rem mkdir %INSDIR%\bin
-@rem copy /y zlib1.dll %INSDIR%\bin
-@rem copy /y zlib1.pdb %INSDIR%\bin
+mkdir %INSDIR%\licenses\zlib
+copy /y LICENSE %INSDIR%\licenses\zlib
+copy /y README %INSDIR%\licenses\zlib
+
 if "%1"=="install" goto EXIT
 
 :EXIT

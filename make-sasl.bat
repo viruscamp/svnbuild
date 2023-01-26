@@ -28,13 +28,14 @@ if "%1"=="compile" goto EXIT
 
 :INSTALL
 nmake -f NTMakefile NTLM=1 SRP=1 OTP=1 PASSDSS=1 %SASL_DB_ARGS% %SASL_OPENSSL_ARGS% prefix=%INSDIR% install
-mkdir %INSDIR%
 
-mkdir %INSDIR%\include
+move /y %INSDIR%\bin\sasl2\* %INSDIR%\bin\
+rmdir %INSDIR%\bin\sasl2
 
-mkdir %INSDIR%\lib
-
-mkdir %INSDIR%\bin
+mkdir %INSDIR%\licenses\cyrus-sasl
+copy /y COPYING %INSDIR%\licenses\cyrus-sasl
+copy /y README %INSDIR%\licenses\cyrus-sasl
+copy /y AUTHORS %INSDIR%\licenses\cyrus-sasl
 
 if "%1"=="install" goto EXIT
 

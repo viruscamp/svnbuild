@@ -34,7 +34,12 @@ if "%1"=="compile" goto EXIT
 
 :INSTALL
 nmake install_sw
-mkdir %INSDIR%
+
+mkdir %INSDIR%\licenses\openssl
+copy /y LICENSE %INSDIR%\licenses\openssl
+copy /y README %INSDIR%\licenses\openssl
+copy /y LICENSE.txt %INSDIR%\licenses\openssl
+copy /y README.md %INSDIR%\licenses\openssl
 
 if "%1"=="install" goto EXIT
 

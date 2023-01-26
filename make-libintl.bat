@@ -25,13 +25,21 @@ if "%1"=="compile" goto EXIT
 :INSTALL
 @rem nmake -f Makefile.msvc DLL=1 TARGET_ARCH=%TARGET_ARCH% prefix=%INSDIR% install
 mkdir %INSDIR%
-mkdir %INSDIR%\lib
-copy /y intl3_svn.lib %INSDIR%\lib
+
 mkdir %INSDIR%\bin
 copy /y intl3_svn.dll %INSDIR%\bin
 copy /y intl3_svn.pdb %INSDIR%\bin
+
 mkdir %INSDIR%\include
 copy /y libintl.h %INSDIR%\include
+
+mkdir %INSDIR%\lib
+copy /y intl3_svn.lib %INSDIR%\lib
+
+mkdir %INSDIR%\licenses\intl
+copy /y COPYING.LIB-2.0 %INSDIR%\licenses\intl
+copy /y COPYING.LIB-2.1 %INSDIR%\licenses\intl
+
 if "%1"=="install" goto EXIT
 
 goto EXIT

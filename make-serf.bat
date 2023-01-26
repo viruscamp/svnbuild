@@ -29,10 +29,18 @@ if "%1"=="compile" goto EXIT
 
 :INSTALL
 %SCONSCMD% install
-mkdir %INSDIR%
+
+del /f %INSDIR%\lib\libserf-*.dll %INSDIR%\lib\libserf-*.pdb
+
 mkdir %INSDIR%\bin
 copy /y libserf-*.dll %INSDIR%\bin
 copy /y libserf-*.pdb %INSDIR%\bin
+
+mkdir %INSDIR%\licenses\serf
+copy /y LICENSE %INSDIR%\licenses\serf
+copy /y README %INSDIR%\licenses\serf
+copy /y NOTICE %INSDIR%\licenses\serf
+
 if "%1"=="install" goto EXIT
 
 goto EXIT

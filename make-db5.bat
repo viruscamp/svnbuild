@@ -52,6 +52,11 @@ copy /y build_windows\%TARGET_ARCH%\Release\libdb*.pdb %INSDIR%\bin
 mkdir out\bin
 copy /y build_windows\%TARGET_ARCH%\Release\libdb*.dll out\bin
 copy /y build_windows\%TARGET_ARCH%\Release\libdb*.pdb out\bin
+
+mkdir %INSDIR%\licenses\bdb
+copy /y LICENSE %INSDIR%\licenses\bdb
+copy /y README %INSDIR%\licenses\bdb
+
 if "%1"=="install" goto EXIT
 
 :EXIT

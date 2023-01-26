@@ -14,6 +14,13 @@ xcopy %APDIR%\bin\libssl-*.dll %INSDIR%\bin /s /e /q /h /r /y
 xcopy %APDIR%\bin\libeay32.dll %INSDIR%\bin /s /e /q /h /r /y
 xcopy %APDIR%\bin\ssleay32.dll %INSDIR%\bin /s /e /q /h /r /y
 
+mkdir %APDIR%\licenses\apr
+mkdir %APDIR%\licenses\apr-util
+mkdir %APDIR%\licenses\apr-iconv
+
+copy /y %APDIR%\LICENSE.txt %APDIR%\licenses\apr
+copy /y %APDIR%\LICENSE.txt %APDIR%\licenses\apr-util
+copy /y %APDIR%\LICENSE.txt %APDIR%\licenses\apr-iconv
 
 if exist %APDIR%\bin\iconv goto AP_BIN_ICONV
 if exist %APDIR%\iconv goto AP_ICONV
