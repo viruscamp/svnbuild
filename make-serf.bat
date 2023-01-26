@@ -14,6 +14,7 @@ rmdir /s /q serf-%VER_SERF%
 cd serf-%VER_SERF%
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\serf-1.3.9-openssl1-init.patch
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\serf-1.3.9-scons.patch
+patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\serf-1.3.9-check-py3.patch
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
 
