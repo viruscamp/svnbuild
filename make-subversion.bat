@@ -64,45 +64,47 @@ set PATH=%INSDIR%\bin\;%PATH%
 mkdir Release\subversion\tests\cmdline
 xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
 
-set TEST_METHOD=
+if "%2"=="" (set TEST_METHOD=local) else (set TEST_METHOD=%2)
+set TEST_ARGS=
 
-if not "%2"=="" goto TEST_METHOD_LOCAL_DONE
-set TEST_METHOD=
+if not "%TEST_METHOD%"=="local" goto TEST_METHOD_LOCAL_DONE
+set TEST_ARGS=
 set TEST_LOG=tests.log
 set TEST_FAIL=fails.log
 :TEST_METHOD_LOCAL_DONE
 
-if not "%2"=="http" goto TEST_METHOD_HTTP_DONE
-set TEST_METHOD=--httpd-dir=%APDIR%
+if not "%TEST_METHOD%"=="http" goto TEST_METHOD_HTTP_DONE
+set TEST_ARGS=--httpd-dir=%APDIR%
 set TEST_LOG=dav-tests.log
 set TEST_FAIL=dav-fails.log
 :TEST_METHOD_HTTP_DONE
 
-if not "%2"=="https" goto TEST_METHOD_HTTPS_DONE
-set TEST_METHOD=--httpd-dir=%APDIR% --https
+if not "%TEST_METHOD%"=="https" goto TEST_METHOD_HTTPS_DONE
+set TEST_ARGS=--httpd-dir=%APDIR% --https
 set TEST_LOG=dav-tests.log
 set TEST_FAIL=dav-fails.log
 :TEST_METHOD_HTTPS_DONE
 
-if not "%2"=="svnserve" goto TEST_METHOD_SVNSERVE_DONE
-set TEST_METHOD=--url=svn://localhost
+if not "%TEST_METHOD%"=="svnserve" goto TEST_METHOD_SVNSERVE_DONE
+set TEST_ARGS=--url=svn://localhost
 set TEST_LOG=svn-tests.log
 set TEST_FAIL=svn-fails.log
 :TEST_METHOD_SVNSERVE_DONE
 
-if not "%2"=="sasl" goto TEST_METHOD_SASL_DONE
-set TEST_METHOD=--enable-sasl
+if not "%TEST_METHOD%"=="sasl" goto TEST_METHOD_SASL_DONE
+set TEST_ARGS=--enable-sasl
 set TEST_LOG=svn-tests.log
 set TEST_FAIL=svn-fails.log
 :TEST_METHOD_SASL_DONE
 
-echo. >> %BUILDROOT%\svn-tests.log
-echo test %2 >> %BUILDROOT%\svn-tests.log
-time /t >> %BUILDROOT%\svn-tests.log
-python win-tests.py -c -r -v %TEST_METHOD%
-time /t >> %BUILDROOT%\svn-tests.log
-copy /y Release\%TEST_LOG% %BUILDROOT%\svn-tests-%2.log
-copy /y Release\%TEST_FAIL% %BUILDROOT%\svn-fails-%2.log
+echo. >> %BUILDROOT%\build.log
+echo svn test %TEST_METHOD% >> %BUILDROOT%\build.log
+time /t >> %BUILDROOT%\build.log
+del /f Release\%TEST_LOG% Release\%TEST_FAIL%
+python win-tests.py -c -r -v %TEST_ARGS%
+time /t >> %BUILDROOT%\build.log
+copy /y Release\%TEST_LOG% %BUILDROOT%\svn-tests-%TEST_METHOD%.log
+copy /y Release\%TEST_FAIL% %BUILDROOT%\svn-fails-%TEST_METHOD%.log
 endlocal
 goto EXIT
 
