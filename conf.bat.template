@@ -16,6 +16,10 @@ set TARGET_ARCH=x64
 @rem append LDFLAGS -subsystem:console,%TARGET_SUBSYSTEM%
 @rem set TARGET_SUBSYSTEM=5.01
 
+@rem set _LINK_=-subsystem:console,%TARGET_SUBSYSTEM%
+@rem build openssl-3.0.x for windows xp need NO_INTERLOCKEDOR64
+@rem set _CL_=-DNO_INTERLOCKEDOR64 -D_WIN32_WINNT=%TARGET_WIN32_WINNT% -link %_LINK_%
+
 set INSDIR=%BUILDROOT%\%TARGET_ARCH%
 
 @rem for scons
@@ -30,6 +34,7 @@ set VER_ZLIB=1.2.13
 set VER_SQLITE=3400100
 set VER_LIBINTL=0.14.6
 
+@rem openssl-1.1.1s and openssl-3.0.7 tested with windows xp
 set VER_OPENSSL=1.1.1s
 @rem set VER_SERF=1.3.9
 set VER_SERF=2.0.0
