@@ -31,8 +31,8 @@ python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS_SH
 if "%1"=="configure" goto EXIT
 
 :COMPILE
-if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
+if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
 @echo fail to build with MSVC_VERSION=%MSVC_VERSION% MSVC_PLATFORMTOOLSET=%MSVC_PLATFORMTOOLSET%
 goto EXIT
 

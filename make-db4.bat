@@ -10,14 +10,16 @@ if "%1"=="install" goto INSTALL
 :UNPACK
 rmdir /s /q db-%VER_DB4%
 7z x %SOURCES_DIR%\db-%VER_DB4%.tar.gz -so | 7z x -aoa -si -ttar -o.
-7z x %SOURCES_DIR%\db-4.8.30-build_windows_vcxproj.zip -aoa -tzip -o.\db-%VER_DB4%\build_windows\
 cd db-%VER_DB4%
+7z x %SOURCES_DIR%\db-4.8.30-build_windows_vcxproj.zip -aoa -tzip -o.\build_windows\
+copy /y %SOURCES_DIR%\db-4-Berkeley_DB_dll.sln .\build_windows\Berkeley_DB_dll.sln
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\db4-cxx-vc.patch
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
-if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
+@rem vc2008 command line use msbuild ver 3.5, should use C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
+if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
 @echo fail to build with MSVC_VERSION=%MSVC_VERSION% MSVC_PLATFORMTOOLSET=%MSVC_PLATFORMTOOLSET%
 goto EXIT
 
@@ -29,7 +31,9 @@ goto COMPILE_DONE
 @rem something goes wrong when upgrade in vs2008
 @rem vcbuild /upgrade build_windows\db.vcproj
 @rem vcbuild build_windows\db.vcproj "Release|%TARGET_ARCH%"
-vcbuild build_windows\Berkeley_DB.sln "Release|%TARGET_ARCH%"
+
+@rem we can only use *.sln, so let's provide a sln file with only db.vcproj
+vcbuild build_windows\Berkeley_DB_dll.sln "Release|%TARGET_ARCH%"
 goto COMPILE_DONE
 
 :COMPILE_DONE
