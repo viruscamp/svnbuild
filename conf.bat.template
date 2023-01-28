@@ -16,9 +16,17 @@ set TARGET_ARCH=x64
 @rem append LDFLAGS -subsystem:console,%TARGET_SUBSYSTEM%
 @rem set TARGET_SUBSYSTEM=5.01
 
+@rem nmake and msbuild use _CL_ and _LINK_
+@rem scons runs building in a new clear env, so it cannot use  _CL_ and _LINK_, should pass them as arguments
+@rem cmake and other building systems are not tested
+
+@rem _WIN32_WINNT =0x0501 for XP-32bit, =0x0502 for XP-64bit , to ensure that the targets do not use newer Windows API, needed for building openssl for windows xp
+@rem _USING_V110_SDK71_ is used in VS xp toolset like v141_xp, atlmfc, may be useless
+@rem NO_INTERLOCKEDOR64 is needed for building openssl-3.0.x for windows xp
+@rem set _CL_=-DNO_INTERLOCKEDOR64 -D_WIN32_WINNT=%TARGET_WIN32_WINNT%
+
+@rem needed for building xp compat apps, for gui apps should be -subsystem:window,%TARGET_SUBSYSTEM%
 @rem set _LINK_=-subsystem:console,%TARGET_SUBSYSTEM%
-@rem build openssl-3.0.x for windows xp need NO_INTERLOCKEDOR64
-@rem set _CL_=-DNO_INTERLOCKEDOR64 -D_WIN32_WINNT=%TARGET_WIN32_WINNT% -link %_LINK_%
 
 set INSDIR=%BUILDROOT%\%TARGET_ARCH%
 
@@ -27,7 +35,7 @@ set INSDIR=%BUILDROOT%\%TARGET_ARCH%
 @rem or: 2002 2003 2005 2008 2010 2012 2013 2015 2017 2019 2022
 set MSVC_VERSION=2019
 
-@rem override MSVC_PLATFORMTOOLSET
+@rem override MSVC_PLATFORMTOOLSET : v141_xp or Windows7.1SDK or other
 @rem set MSVC_PLATFORMTOOLSET=Windows7.1SDK
 
 set VER_ZLIB=1.2.13

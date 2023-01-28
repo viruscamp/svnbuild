@@ -31,7 +31,10 @@ python gen-make.py --vsnet-version=%MSVC_VERSION% %SVN_APACHE_DEPS% %SVN_DEPS_SH
 if "%1"=="configure" goto EXIT
 
 :COMPILE
+if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
+@echo fail to build with MSVC_VERSION=%MSVC_VERSION% MSVC_PLATFORMTOOLSET=%MSVC_PLATFORMTOOLSET%
+goto EXIT
 
 :MSBUILD
 msbuild subversion_vcnet.sln /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release /t:__MORE__
@@ -39,6 +42,7 @@ goto COMPILE_DONE
 
 :VCBUILD
 vcbuild subversion_vcnet.sln "Release|%TARGET_ARCH%"
+goto COMPILE_DONE
 
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT

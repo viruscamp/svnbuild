@@ -16,7 +16,10 @@ patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\db4-cxx-vc.patch
 if "%1"=="unpack" goto EXIT
 
 :COMPILE
+if not "%MSVC_PLATFORMTOOLSET%"=="" goto MSBUILD
 if not "%MSVC_VERSION%" geq "2010" goto VCBUILD
+@echo fail to build with MSVC_VERSION=%MSVC_VERSION% MSVC_PLATFORMTOOLSET=%MSVC_PLATFORMTOOLSET%
+goto EXIT
 
 :MSBUILD
 msbuild build_windows\db.vcxproj /p:PlatformToolset=%MSVC_PLATFORMTOOLSET% /p:Platform=%TARGET_ARCH% /p:Configuration=Release
@@ -27,6 +30,7 @@ goto COMPILE_DONE
 @rem vcbuild /upgrade build_windows\db.vcproj
 @rem vcbuild build_windows\db.vcproj "Release|%TARGET_ARCH%"
 vcbuild build_windows\Berkeley_DB.sln "Release|%TARGET_ARCH%"
+goto COMPILE_DONE
 
 :COMPILE_DONE
 if "%1"=="compile" goto EXIT
