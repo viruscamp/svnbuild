@@ -1,0 +1,250 @@
+win10-x64 测试失败
+
+FAIL:  patch_tests.py 69: add and remove executable file
+	杀毒软件杀掉一个文件 antivirus kill patch_tests-69\eicar.com
+FAIL:  update_tests.py 31: update wc on the root of a Windows (virtual) drive
+	
+FAIL:  update_tests.py 57: access denied paths should be skipped
+
+
+
+I: CMD: svnadmin.exe create svn-test-work\repositories\patch_tests-69 --compatible-version=1.14 --fs-type=fsfs
+I: <TIME = 0.343552>
+I: CMD: svnadmin.exe dump svn-test-work\local_tmp\repos | svnadmin.exe load svn-test-work\repositories\patch_tests-69 --ignore-uuid
+I: <TIME = 0.586828>
+I: CMD: svnadmin.exe setuuid svn-test-work\repositories\patch_tests-69
+I: <TIME = 0.073200>
+I: CMD: svn.exe co file:///F:/svnbuild/work64/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/patch_tests-69 svn-test-work\working_copies\patch_tests-69 --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.157137>
+I: A    svn-test-work\working_copies\patch_tests-69\A
+I: A    svn-test-work\working_copies\patch_tests-69\A\B
+I: A    svn-test-work\working_copies\patch_tests-69\A\B\E
+I: A    svn-test-work\working_copies\patch_tests-69\A\B\E\alpha
+I: A    svn-test-work\working_copies\patch_tests-69\A\B\E\beta
+I: A    svn-test-work\working_copies\patch_tests-69\A\B\F
+I: A    svn-test-work\working_copies\patch_tests-69\A\B\lambda
+I: A    svn-test-work\working_copies\patch_tests-69\A\C
+I: A    svn-test-work\working_copies\patch_tests-69\A\D
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\G
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\G\pi
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\G\rho
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\G\tau
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\H
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\H\chi
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\H\omega
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\H\psi
+I: A    svn-test-work\working_copies\patch_tests-69\A\D\gamma
+I: A    svn-test-work\working_copies\patch_tests-69\A\mu
+I: A    svn-test-work\working_copies\patch_tests-69\iota
+I: Checked out revision 1.
+I: CMD: svn.exe add svn-test-work\working_copies\patch_tests-69\eicar.com --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: CMD: F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe add svn-test-work\working_copies\patch_tests-69\eicar.com --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom exited with 1
+I: <TIME = 0.468335>
+I: svn: E720225: Can't open file 'F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\working_copies\patch_tests-69\eicar.com': 无法成功完成操作，因为文件包含病毒或潜在的垃圾软件。
+W: svn: E720225: Can't open file 'F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\working_copies\patch_tests-69\eicar.com': 无法成功完成操作，因为文件包含病毒或潜在的垃圾软件。
+W: CWD: F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline
+W: EXCEPTION: Failure: Command failed: "F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe add svn-test-work\working_copies\patch_tests-69\eicar.com --config-dir ..."; exit code 1
+Traceback (most recent call last):
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 1927, in run
+    rc = self.pred.run(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 178, in run
+    result = self.func(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\patch_tests.py", line 6757, in patch_add_remove_executable
+    sbox.simple_add_text(eicar_data, 'eicar.com')
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\sandbox.py", line 432, in simple_add_text
+    self.simple_add(*targets)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\sandbox.py", line 359, in simple_add
+    svntest.main.run_svn(False, 'add', *targets)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 817, in run_svn
+    return run_command(svn_binary, error_expected, False,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 444, in run_command
+    return run_command_stdin(command, error_expected, 0, binary_mode,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 665, in run_command_stdin
+    raise Failure('Command failed: "' + brief_command +
+svntest.Failure: Command failed: "F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe add svn-test-work\working_copies\patch_tests-69\eicar.com --config-dir ..."; exit code 1
+FAIL:  patch_tests.py 69: add and remove executable file
+
+
+
+I: CMD: svnadmin.exe create svn-test-work\repositories\update_tests-31 --compatible-version=1.14 --fs-type=fsfs
+I: <TIME = 0.213744>
+I: CMD: svnadmin.exe dump svn-test-work\local_tmp\repos | svnadmin.exe load svn-test-work\repositories\update_tests-31 --ignore-uuid
+I: <TIME = 0.641125>
+I: CMD: svnadmin.exe setuuid svn-test-work\repositories\update_tests-31
+I: <TIME = 0.176987>
+I: CMD: svn.exe checkout file:///F:/svnbuild/work64/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/update_tests-31 G:/ --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.142496>
+I: A    G:\A
+I: A    G:\A\B
+I: A    G:\A\B\E
+I: A    G:\A\B\E\alpha
+I: A    G:\A\B\E\beta
+I: A    G:\A\B\F
+I: A    G:\A\B\lambda
+I: A    G:\A\C
+I: A    G:\A\D
+I: A    G:\A\D\G
+I: A    G:\A\D\G\pi
+I: A    G:\A\D\G\rho
+I: A    G:\A\D\G\tau
+I: A    G:\A\D\H
+I: A    G:\A\D\H\chi
+I: A    G:\A\D\H\omega
+I: A    G:\A\D\H\psi
+I: A    G:\A\D\gamma
+I: A    G:\A\mu
+I: A    G:\iota
+I: Checked out revision 1.
+I: CMD: svn.exe add G:/zeta --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.041968>
+I: A         G:\zeta
+I: CMD: svn.exe ci G:/ G:/zeta -m "log msg" --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.422609>
+I: Sending        G:\A\mu
+I: Adding         G:\zeta
+I: Transmitting file data ..done
+I: Committing transaction...
+I: Committed revision 2.
+I: CMD: svn.exe status -v -u -q G:/ --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.046848>
+I:                  1        1 jrandom      G:\A\B\E
+I:                  1        1 jrandom      G:\A\B\E\alpha
+I:                  1        1 jrandom      G:\A\B\E\beta
+I:                  1        1 jrandom      G:\A\B\F
+I:                  1        1 jrandom      G:\A\B\lambda
+I:                  1        1 jrandom      G:\A\B
+I:                  2        2 jrandom      G:\A\mu
+I:                  1        1 jrandom      G:\A\C
+I:                  1        1 jrandom      G:\A\D\G
+I:                  1        1 jrandom      G:\A\D\G\pi
+I:                  1        1 jrandom      G:\A\D\G\rho
+I:                  1        1 jrandom      G:\A\D\G\tau
+I:                  1        1 jrandom      G:\A\D\H
+I:                  1        1 jrandom      G:\A\D\H\chi
+I:                  1        1 jrandom      G:\A\D\H\omega
+I:                  1        1 jrandom      G:\A\D\H\psi
+I:                  1        1 jrandom      G:\A\D\gamma
+I:                  1        1 jrandom      G:\A\D
+I:                  1        1 jrandom      G:\A
+I:                  1        1 jrandom      G:\iota
+I:                  2        2 jrandom      G:\zeta
+I: !                1        1 jrandom      G:\
+I: Status against revision:      2
+W: =============================================================
+Expected '' and actual '' in status tree are different!
+=============================================================
+EXPECTED NODE TO BE:
+=============================================================
+ * Node name:   
+    Path:       G:
+    Contents:   None
+    Properties: {}
+    Attributes: {'status': '  ', 'wc_rev': '1'}
+    Children:  None (node is probably a file)
+=============================================================
+ACTUAL NODE FOUND:
+=============================================================
+ * Node name:   
+    Path:       G:
+    Contents:   None
+    Properties: {}
+    Attributes: {'status': '! ', 'wc_rev': '1'}
+    Children:  None (node is probably a file)
+
+W: ACTUAL STATUS TREE:
+svntest.wc.State(wc_dir, {})
+W: CWD: F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline
+W: EXCEPTION: SVNTreeUnequal
+Traceback (most recent call last):
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 1927, in run
+    rc = self.pred.run(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 258, in run
+    return self._delegate.run(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 178, in run
+    result = self.func(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\update_tests.py", line 2294, in update_wc_on_windows_drive
+    svntest.actions.run_and_verify_commit(wc_dir, expected_output,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 1574, in run_and_verify_commit
+    run_and_verify_status(wc_dir_name, status_tree)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 1594, in run_and_verify_status
+    status_tree.compare_and_display('status', actual_status)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\wc.py", line 381, in compare_and_display
+    raise svntest.tree.SVNTreeUnequal
+svntest.tree.SVNTreeUnequal
+FAIL:  update_tests.py 31: update wc on the root of a Windows (virtual) drive
+
+
+
+I: CMD: svnadmin.exe create svn-test-work\repositories\update_tests-57 --compatible-version=1.14 --fs-type=fsfs
+I: <TIME = 0.215696>
+I: CMD: svnadmin.exe dump svn-test-work\local_tmp\repos | svnadmin.exe load svn-test-work\repositories\update_tests-57 --ignore-uuid
+I: <TIME = 0.650017>
+I: CMD: svnadmin.exe setuuid svn-test-work\repositories\update_tests-57
+I: <TIME = 0.080030>
+I: CMD: svn.exe co file:///F:/svnbuild/work64/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/update_tests-57 svn-test-work\working_copies\update_tests-57 --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.170800>
+I: A    svn-test-work\working_copies\update_tests-57\A
+I: A    svn-test-work\working_copies\update_tests-57\A\B
+I: A    svn-test-work\working_copies\update_tests-57\A\B\E
+I: A    svn-test-work\working_copies\update_tests-57\A\B\E\alpha
+I: A    svn-test-work\working_copies\update_tests-57\A\B\E\beta
+I: A    svn-test-work\working_copies\update_tests-57\A\B\F
+I: A    svn-test-work\working_copies\update_tests-57\A\B\lambda
+I: A    svn-test-work\working_copies\update_tests-57\A\C
+I: A    svn-test-work\working_copies\update_tests-57\A\D
+I: A    svn-test-work\working_copies\update_tests-57\A\D\G
+I: A    svn-test-work\working_copies\update_tests-57\A\D\G\pi
+I: A    svn-test-work\working_copies\update_tests-57\A\D\G\rho
+I: A    svn-test-work\working_copies\update_tests-57\A\D\G\tau
+I: A    svn-test-work\working_copies\update_tests-57\A\D\H
+I: A    svn-test-work\working_copies\update_tests-57\A\D\H\chi
+I: A    svn-test-work\working_copies\update_tests-57\A\D\H\omega
+I: A    svn-test-work\working_copies\update_tests-57\A\D\H\psi
+I: A    svn-test-work\working_copies\update_tests-57\A\D\gamma
+I: A    svn-test-work\working_copies\update_tests-57\A\mu
+I: A    svn-test-work\working_copies\update_tests-57\iota
+I: Checked out revision 1.
+I: CMD: svn.exe ci -m "File 'F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\update_tests.py', line 5156, in skip_access_denied" svn-test-work\working_copies\update_tests-57 --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.345504>
+I: Sending        svn-test-work\working_copies\update_tests-57\iota
+I: Transmitting file data .done
+I: Committing transaction...
+I: Committed revision 2.
+I: CMD: svn.exe update svn-test-work\working_copies\update_tests-57 -r HEAD --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: <TIME = 0.053678>
+I: Updating 'svn-test-work\working_copies\update_tests-57':
+I: At revision 2.
+I: CMD: svn.exe up svn-test-work\working_copies\update_tests-57 -r 1 --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: CMD: F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe up svn-test-work\working_copies\update_tests-57 -r 1 --config-dir F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom exited with 1
+I: <TIME = 0.141522>
+I: Updating 'svn-test-work\working_copies\update_tests-57':
+I: svn: E720033: Can't read file 'F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\working_copies\update_tests-57\iota': 另一个程序已锁定文件的一部分，进程无法访问。
+W: svn: E720033: Can't read file 'F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\working_copies\update_tests-57\iota': 另一个程序已锁定文件的一部分，进程无法访问。
+W: CWD: F:\svnbuild\work64\subversion-1.14.2\Release\subversion\tests\cmdline
+W: EXCEPTION: Failure: Command failed: "F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe up svn-test-work\working_copies\update_tests-57 -r ..."; exit code 1
+Traceback (most recent call last):
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 1927, in run
+    rc = self.pred.run(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 258, in run
+    return self._delegate.run(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 178, in run
+    result = self.func(sandbox)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\update_tests.py", line 5180, in skip_access_denied
+    svntest.actions.run_and_verify_update(wc_dir,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 959, in run_and_verify_update
+    run_and_verify_update2(wc_dir_name,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 1002, in run_and_verify_update2
+    exit_code, output, errput = run_and_verify_svn(None, expected_stderr, 'up', *args)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 339, in run_and_verify_svn
+    return run_and_verify_svn2(expected_stdout, expected_stderr,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 378, in run_and_verify_svn2
+    exit_code, out, err = main.run_svn(want_err, *varargs)
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 817, in run_svn
+    return run_command(svn_binary, error_expected, False,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 444, in run_command
+    return run_command_stdin(command, error_expected, 0, binary_mode,
+  File "F:\svnbuild\work64\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 665, in run_command_stdin
+    raise Failure('Command failed: "' + brief_command +
+svntest.Failure: Command failed: "F:\svnbuild\work64\subversion-1.14.2\Release\subversion\svn/svn.exe up svn-test-work\working_copies\update_tests-57 -r ..."; exit code 1
+FAIL:  update_tests.py 57: access denied paths should be skipped
+

@@ -1,0 +1,23 @@
+svnserve 使用sasl DIGEST-MD5 客户端会导致服务器 segement fault
+
+C:\sasl\conf\svn.conf
+pwcheck_method: auxprop
+auxprop_plugin: sasldb
+mech_list: DIGEST-MD5 #fail
+sasldb_path: C:\sasl\conf\svn.db
+
+authz_tests.py#1
+
+set PATH=%INSDIR%\bin;%PATH%
+
+cd subversion-1.14.2
+python win-tests.py -r -v --enable-sasl --t authz_tests.py#1
+
+cd Release\subversion\tests\cmdline
+//svnadmin.exe create svn-test-work\local_tmp\repos --compatible-version=1.14 --fs-type=fsfs
+
+svnserve.exe -d -r C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\
+debugger 连接 svnserve
+
+svn.exe import -m "Log message for revision 1." svn-test-work\local_tmp\greekfiles svn://localhost/svn-test-work/local_tmp/repos --config-dir C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+

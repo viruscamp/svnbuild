@@ -1,0 +1,76 @@
+FAIL:  svnsync_tests.py 24: copy and reencode non-UTF-8 svn:* props
+
+cd %buildroot%\subversion-%VER_SUBVERSION%\Release
+
+svnadmin.exe create svnsync_tests-24 --compatible-version=1.14 --fs-type=fsfs
+svnadmin.exe load --force-uuid --quiet svnsync_tests-24 --bypass-prop-validation -F copy-bad-encoding.dump
+svnadmin.exe create svnsync_tests-24-1 --compatible-version=1.14 --fs-type=fsfs
+
+svnlook.exe uuid svnsync_tests-24
+
+svnadmin.exe setuuid svnsync_tests-24-1 d90df8cd-70fe-4939-a557-177246366bb1
+
+(echo @exit 0)>svnsync_tests-24-1\hooks\pre-revprop-change.bat
+
+svnsync.exe initialize file:///%buildroot%/subversion-%VER_SUBVERSION%/Release/svnsync_tests-24-1 file:///%buildroot%/subversion-%VER_SUBVERSION%/Release/svnsync_tests-24 --source-prop-encoding ISO-8859-3 --password rayjandom --no-auth-cache --username jrandom
+
+svnsync: E720087: 不能把字符串从“ISO-8859-3”编码转换为“UTF-8”编码。
+svnsync: E720087: 2011-01-11T20:57:24.206641Z
+
+subversion-1.14.2\subversion\libsvn_subr\utf.c :493
+	svn_subr__win32_xlate_to_stringbuf
+	没有用 apr_xlate_conv_buffer
+subversion-1.14.2\subversion\libsvn_subr\win32_xlate.c
+
+I: CMD: svnadmin.exe create svn-test-work\repositories\svnsync_tests-24 --compatible-version=1.14 --fs-type=fsfs
+I: <TIME = 0.027000>
+I: CMD: svnadmin.exe load --force-uuid --quiet svn-test-work\repositories\svnsync_tests-24 --bypass-prop-validation
+I: <TIME = 0.036000>
+I: CMD: svnadmin.exe create svn-test-work\repositories\svnsync_tests-24-1 --compatible-version=1.14 --fs-type=fsfs
+I: <TIME = 0.027000>
+I: CMD: svnlook.exe uuid svn-test-work\repositories\svnsync_tests-24
+I: <TIME = 0.018000>
+I: d90df8cd-70fe-4939-a557-177246366bb1
+I: CMD: svnadmin.exe setuuid svn-test-work\repositories\svnsync_tests-24-1 d90df8cd-70fe-4939-a557-177246366bb1
+I: <TIME = 0.026000>
+I: CMD: svnsync.exe initialize file:///C:/svnbuild/work32/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/svnsync_tests-24-1 file:///C:/svnbuild/work32/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/svnsync_tests-24 --source-prop-encoding ISO-8859-3 --config-dir C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+I: CMD: C:\svnbuild\work32\subversion-1.14.2\Release\subversion\svnsync/svnsync.exe initialize file:///C:/svnbuild/work32/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/svnsync_tests-24-1 file:///C:/svnbuild/work32/subversion-1.14.2/Release/subversion/tests/cmdline/svn-test-work/repositories/svnsync_tests-24 --source-prop-encoding ISO-8859-3 --config-dir C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom exited with 1
+I: <TIME = 0.143000>
+I: svnsync: E720087: Can't convert string from 'ISO-8859-3' to 'UTF-8':
+I: svnsync: E720087: 2011-01-11T20:57:24.206641Z
+W: Unexpected output
+W: EXPECTED STDERR (match_all=True):
+W: ACTUAL STDERR:
+W: | svnsync: E720087: Can't convert string from 'ISO-8859-3' to 'UTF-8':
+W: | svnsync: E720087: 2011-01-11T20:57:24.206641Z
+W: DIFF STDERR (match_all=True):
+W: | --- EXPECTED STDERR (match_all=True)
+W: | +++ ACTUAL STDERR
+W: | @@ -0,0 +1,2 @@
+W: | +svnsync: E720087: Can't convert string from 'ISO-8859-3' to 'UTF-8':
+W: | +svnsync: E720087: 2011-01-11T20:57:24.206641Z
+W: CWD: C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline
+W: EXCEPTION: SVNLineUnequal
+Traceback (most recent call last):
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\main.py", line 1927, in run
+    rc = self.pred.run(sandbox)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\testcase.py", line 178, in run
+    result = self.func(sandbox)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svnsync_tests.py", line 406, in copy_bad_encoding
+    bypass_prop_validation=True, source_prop_encoding="ISO-8859-3")
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svnsync_tests.py", line 190, in run_test
+    is_src_ra_local, is_dest_ra_local)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svnsync_tests.py", line 142, in setup_and_sync
+    run_init(dest_repo_url, repo_url, source_prop_encoding)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svnsync_tests.py", line 94, in run_init
+    svntest.actions.run_and_verify_svnsync(expected_output, [], *args)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 485, in run_and_verify_svnsync
+    expected_exit, *varargs)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\actions.py", line 500, in run_and_verify_svnsync2
+    expected_stdout, expected_stderr)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\verify.py", line 531, in verify_outputs
+    compare_and_display_lines(message, label, expected, actual, raisable)
+  File "C:\svnbuild\work32\subversion-1.14.2\subversion\tests\cmdline\svntest\verify.py", line 504, in compare_and_display_lines
+    raise raisable
+SVNLineUnequal
+FAIL:  svnsync_tests.py 24: copy and reencode non-UTF-8 svn:* props
