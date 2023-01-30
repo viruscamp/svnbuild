@@ -81,35 +81,41 @@ if not "%TEST_METHOD%"=="local" goto TEST_METHOD_LOCAL_DONE
 set TEST_ARGS=
 set TEST_LOG=tests.log
 set TEST_FAIL=fails.log
+goto TEST_START
 :TEST_METHOD_LOCAL_DONE
 
 if not "%TEST_METHOD%"=="http" goto TEST_METHOD_HTTP_DONE
 set TEST_ARGS=--httpd-dir=%APDIR%
 set TEST_LOG=dav-tests.log
 set TEST_FAIL=dav-fails.log
+goto TEST_START
 :TEST_METHOD_HTTP_DONE
 
 if not "%TEST_METHOD%"=="https" goto TEST_METHOD_HTTPS_DONE
 set TEST_ARGS=--httpd-dir=%APDIR% --https
 set TEST_LOG=dav-tests.log
 set TEST_FAIL=dav-fails.log
+goto TEST_START
 :TEST_METHOD_HTTPS_DONE
 
 if not "%TEST_METHOD%"=="svnserve" goto TEST_METHOD_SVNSERVE_DONE
 set TEST_ARGS=--url=svn://localhost
 set TEST_LOG=svn-tests.log
 set TEST_FAIL=svn-fails.log
+goto TEST_START
 :TEST_METHOD_SVNSERVE_DONE
 
 if not "%TEST_METHOD%"=="sasl" goto TEST_METHOD_SASL_DONE
 set TEST_ARGS=--enable-sasl
 set TEST_LOG=svn-tests.log
 set TEST_FAIL=svn-fails.log
+goto TEST_START
 :TEST_METHOD_SASL_DONE
 
 echo unknown TEST_METHOD="%TEST_METHOD%"
 goto TEST_END
 
+:TEST_START
 echo. >> %BUILDROOT%\build.log
 echo svn test %TEST_METHOD% >> %BUILDROOT%\build.log
 time /t >> %BUILDROOT%\build.log
