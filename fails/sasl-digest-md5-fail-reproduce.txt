@@ -3,7 +3,7 @@ svnserve 使用sasl DIGEST-MD5 客户端会导致服务器 segement fault
 C:\sasl\conf\svn.conf
 pwcheck_method: auxprop
 auxprop_plugin: sasldb
-mech_list: DIGEST-MD5 #fail
+mech_list: DIGEST-MD5 #fail with openssl-3.0.x
 sasldb_path: C:\sasl\conf\svn.db
 
 authz_tests.py#1
@@ -16,8 +16,18 @@ python win-tests.py -r -v --enable-sasl --t authz_tests.py#1
 cd Release\subversion\tests\cmdline
 //svnadmin.exe create svn-test-work\local_tmp\repos --compatible-version=1.14 --fs-type=fsfs
 
-svnserve.exe -d -r C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\
+后台启动 svnserve
+call start /min "svnserve" svnserve.exe -d -r .
 debugger 连接 svnserve
 
-svn.exe import -m "Log message for revision 1." svn-test-work\local_tmp\greekfiles svn://localhost/svn-test-work/local_tmp/repos --config-dir C:\svnbuild\work32\subversion-1.14.2\Release\subversion\tests\cmdline\svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+svn.exe import -m "Log message for revision 1." svn-test-work\local_tmp\greekfiles svn://localhost/svn-test-work/local_tmp/repos --config-dir svn-test-work\local_tmp\config --password rayjandom --no-auth-cache --username jrandom
+
+F:\svnbuild\work64\cyrus-sasl-2.1.28\plugins\digestmd5.c: 1145
+digestmd5_server_mech_step2 调用 init_rc4
+    rc = EVP_EncryptInit_ex(ctx, EVP_rc4(), NULL, enckey, NULL);
+    if (rc != 1) return SASL_FAIL;
+此处返回错误码 导致 text->cipher_dec_context == NULL
+其后错误
+
+传入的 enckey deckey 是 char[16] md5算出的定死 16长度 无 \0 结束的
 

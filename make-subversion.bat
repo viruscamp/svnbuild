@@ -69,9 +69,10 @@ if "%1"=="install" goto EXIT
 goto EXIT
 :TEST
 setlocal
-set PATH=%INSDIR%\bin\;%PATH%
-mkdir Release\subversion\tests\cmdline
-xcopy /S /Y subversion\tests\cmdline Release\subversion\tests\cmdline
+xcopy /S /Y %INSDIR%\bin\libapriconv*.dll Release\
+xcopy /S /Y %INSDIR%\bin\libcrypto*.dll Release\
+xcopy /S /Y %INSDIR%\bin\libssl*.dll Release\
+xcopy /S /Y %INSDIR%\bin\sasl*.dll Release\
 
 if "%2"=="" (set TEST_METHOD=local) else (set TEST_METHOD=%2)
 set TEST_ARGS=
@@ -106,6 +107,9 @@ set TEST_LOG=svn-tests.log
 set TEST_FAIL=svn-fails.log
 :TEST_METHOD_SASL_DONE
 
+echo unknown TEST_METHOD="%TEST_METHOD%"
+goto TEST_END
+
 echo. >> %BUILDROOT%\build.log
 echo svn test %TEST_METHOD% >> %BUILDROOT%\build.log
 time /t >> %BUILDROOT%\build.log
@@ -114,6 +118,8 @@ python win-tests.py -c -r -v %TEST_ARGS%
 time /t >> %BUILDROOT%\build.log
 copy /y Release\%TEST_LOG% %BUILDROOT%\svn-tests-%TEST_METHOD%.log
 copy /y Release\%TEST_FAIL% %BUILDROOT%\svn-fails-%TEST_METHOD%.log
+
+:TEST_END
 endlocal
 goto EXIT
 

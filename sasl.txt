@@ -25,11 +25,14 @@ svnserve.exe 使用的是 appname 是 svn
 auxprop 可以存储用户名密码 配合 加密算法 可以设置验证用户名密码
 至少 ldap ntlm 可以验证用户名密码
 
-某种配置
+C:\sals2\config\svn.conf 某种配置 
 pwcheck_method: auxprop
 auxprop_plugin: sasldb
-mech_list: DIGEST-MD5
-sasldb_path: C:\TortoiseSVN\sasldb
+mech_list: CRAM-MD5
+#mech_list: DIGEST-MD5 #fail with openssl-3.0.x
+sasldb_path: C:\sals2\config\svn.db
+
+目前 DIGEST-MD5 会导致 svnserve 崩溃, OTP 报密码过于简单, 基本只有 PLAIN CRAM-MD5 SCRAM-SHA-* 可用
 
 设置用户名与密码 见 win-tests.py 的 _create_users_file
 saslpasswd2.exe -c -f "C:\TortoiseSVN\sasldb" -u TestRealm john.smith
