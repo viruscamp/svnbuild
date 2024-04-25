@@ -1,0 +1,21 @@
+https://www.apachehaus.com/cgi-bin/download.plx
+https://www.apachelounge.com/download/
+Last XP version: https://www.apachelounge.com/download/VC10/
+
+https://www.zlib.net/
+
+https://sqlite.org/download.html
+
+https://openssl.org/source/
+https://openssl.org/source/old/1.1.1/index.html
+
+https://serf.apache.org/download
+
+https://github.com/berkeleydb/libdb/releases
+https://download.oracle.com/berkeley-db/db-5.3.28.tar.gz
+https://download.oracle.com/berkeley-db/db-4.8.30.tar.gz
+
+https://github.com/cyrusimap/cyrus-sasl/releases
+
+https://subversion.apache.org/download.cgi#recommended-release
+
