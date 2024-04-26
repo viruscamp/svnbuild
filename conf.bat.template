@@ -42,11 +42,12 @@ set VER_ZLIB=1.2.13
 set VER_SQLITE=3400100
 set VER_LIBINTL=0.14.6
 
-@rem openssl-1.1.1s and openssl-3.0.7 tested with windows xp
+@rem latest version passed MSVC v10-x86(VS2010) are 1.1.1w, 3.0.13, 3.1.5
+@rem openssl 3.3.0, 3.2.1 cannot be compiled in MSVC v10-x86(VS2010)
 set VER_OPENSSL=1.1.1s
+
 @rem set VER_SERF=1.3.9
 set VER_SERF=2.0.0
-
 @rem set USE_SHARED_SERF=yes to used libserf-*.dll
 set USE_SHARED_SERF=1
 

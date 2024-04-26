@@ -19,3 +19,5 @@ https://github.com/cyrusimap/cyrus-sasl/releases
 
 https://subversion.apache.org/download.cgi#recommended-release
 
+libintl is from TortoiseSVN
+https://sourceforge.net/p/tortoisesvn/code/HEAD/tree/trunk/ext/libintl/

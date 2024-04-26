@@ -1,0 +1,18 @@
+http://awk.freeshell.org/AwkOnWindows
+	http://www.klabaster.com/progs/awk95.zip
+
+https://gnuwin32.sourceforge.net/packages.html
+
+https://sourceforge.net/projects/gnuwin32/files/gettext/0.14.4/
+	gettext-0.14.4-bin.zip
+	gettext-0.14.4-dep.zip
+
+https://sourceforge.net/projects/gnuwin32/files/patch/2.5.9-7/
+	patch-2.5.9-7-bin.zip
+
+https://sourceforge.net/projects/gnuwin32/files/gawk/3.1.6-1/
+	gawk-3.1.6-1-bin.zip
+
+https://www.nasm.us/pub/nasm/releasebuilds/?C=M;O=D
+	nasm-2.15.05-win32.zip
+	nasm-2.15.05-win64.zip
