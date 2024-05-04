@@ -16,3 +16,6 @@ https://sourceforge.net/projects/gnuwin32/files/gawk/3.1.6-1/
 https://www.nasm.us/pub/nasm/releasebuilds/?C=M;O=D
 	nasm-2.15.05-win32.zip
 	nasm-2.15.05-win64.zip
+
+https://winpython.github.io/
+	https://sourceforge.net/projects/winpython/files/WinPython_3.4/3.4.4.7/

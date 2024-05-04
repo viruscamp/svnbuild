@@ -1,6 +1,7 @@
 https://www.apachehaus.com/cgi-bin/download.plx
 https://www.apachelounge.com/download/
 Last XP version: https://www.apachelounge.com/download/VC10/
+Some Apache lacks: include\expat_external.h
 
 https://www.zlib.net/
 
