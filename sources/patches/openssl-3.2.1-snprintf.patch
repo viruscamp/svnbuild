@@ -1,0 +1,31 @@
+--- a/apps/lib/http_server.c
++++ b/apps/lib/http_server.c
+@@ -200,7 +200,7 @@
+     int port_num;
+     char name[40];
+ 
+-    snprintf(name, sizeof(name), "*:%s", port); /* port may be "0" */
++    BIO_snprintf(name, sizeof(name), "*:%s", port); /* port may be "0" */
+     if (verb >= 0 && !log_set_verbosity(prog, verb))
+         return NULL;
+     bufbio = BIO_new(BIO_f_buffer());
+--- a/test/quic_multistream_test.c
++++ b/test/quic_multistream_test.c
+@@ -5154,7 +5154,7 @@
+     }
+ #endif
+ 
+-    snprintf(script_name, sizeof(script_name), "script %d", script_idx + 1);
++    BIO_snprintf(script_name, sizeof(script_name), "script %d", script_idx + 1);
+ 
+     TEST_info("Running script %d (order=%d, blocking=%d)", script_idx + 1,
+               free_order, blocking);
+@@ -5239,7 +5239,7 @@
+             s[i].arg2 = forbidden_frame_types[idx].expected_err;
+         }
+ 
+-    snprintf(script_name, sizeof(script_name),
++    BIO_snprintf(script_name, sizeof(script_name),
+              "dyn script %d", idx);
+ 
+     return run_script(dyn_frame_types_script, script_name, 0, 0);

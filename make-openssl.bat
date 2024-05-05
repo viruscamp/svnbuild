@@ -15,15 +15,25 @@ rmdir /s /q openssl-%VER_OPENSSL%
 cd openssl-%VER_OPENSSL%
 
 if not "%VER_OPENSSL%"=="1.1.1o" goto PATCH111O_DONE
-patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18446.patch
-patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.patch
+  patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18446.patch
+  patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.patch
 :PATCH111O_DONE
 
-if not "%VER_OPENSSL%"=="3.3.0" goto PATCH330_DONE
-patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.3.0-issue-24109.patch
-:PATCH330_DONE
+if "%MSVC_VERSION%" geq "2015" goto PATCH_SNPRINTF_DONE
+@rem replace all `snprintf` to `BIO_snprintf` for MSVC_VERSION < 2015
+  if not "%VER_OPENSSL%"=="3.2.1" goto PATCH321_SNPRINTF_DONE
+    patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.2.1-snprintf.patch
+  :PATCH321_SNPRINTF_DONE
 
-@rem TODO 3.2.1 and 3.3.0 need to replace all `snprintf` to `BIO_snprintf` in low version of msvc
+  if not "%VER_OPENSSL%"=="3.3.0" goto PATCH330_SNPRINTF_DONE
+    patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.3.0-snprintf.patch
+  :PATCH330_SNPRINTF_DONE
+
+:PATCH_SNPRINTF_DONE
+
+if not "%VER_OPENSSL%"=="3.3.0" goto PATCH330_DONE
+  patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.3.0-issue-24109.patch
+:PATCH330_DONE
 
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
