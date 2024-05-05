@@ -56,4 +56,4 @@ set PYTHONPATH=%PYTHONHOME%
 set PATH=%PYTHONPATH%;%PYTHONPATH%\Scripts;%PATH%
 set PYTHONSTARTUP=
 if exist "%PYTHONPATH%\Lib\ppp.py" set PYTHONSTARTUP="%PYTHONPATH%\Lib\ppp.py"
-set SCONSCMD=python "%TOOLS_DIR%\scons-local\scons.py"
+set SCONSCMD=python %SCONS_PY%

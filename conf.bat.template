@@ -2,8 +2,15 @@ set SOURCES_DIR=D:\svnbuild\sources
 set TOOLS_DIR=D:\svnbuild\tools
 
 set SEVENZIPPATH="C:\Program Files\7-Zip-Zstandard"
-set PYTHONHOME=%TOOLS_DIR%\python
 set PERLHOME=%TOOLS_DIR%\perl
+
+@rem use python2.7 in win xp, with scons-3.1.2
+set PYTHONHOME=%TOOLS_DIR%\python27\App\Python\
+set SCONS_PY=%TOOLS_DIR%\scons-local-3.1.2\scons.py
+
+@rem use python3.10 in win7+, with scons-4.4.0
+set PYTHONHOME=%TOOLS_DIR%\python310\
+set SCONS_PY=%TOOLS_DIR%\scons-local-4.4.0\scons.py
 
 set APDIR=C:\Apache24
 
@@ -22,10 +29,13 @@ set TARGET_ARCH=x64
 
 @rem _WIN32_WINNT =0x0501 for XP-32bit, =0x0502 for XP-64bit , to ensure that the targets do not use newer Windows API, needed for building openssl for windows xp
 @rem _USING_V110_SDK71_ is used in VS xp toolset like v141_xp, atlmfc, may be useless
-@rem NO_INTERLOCKEDOR64 is needed for building openssl-3.0.x for windows xp
-@rem set _CL_=-DNO_INTERLOCKEDOR64 -D_WIN32_WINNT=%TARGET_WIN32_WINNT%
+@rem NO_INTERLOCKEDOR64 maybe needed for building openssl-3.0.x for windows xp
+@rem NO_INTERLOCKEDOR64 is defined for vs2008-x86 in openssl (defined(_M_IX86) && _MSC_VER <= 1600)
+@rem set _CL_=-D_WIN32_WINNT=%TARGET_WIN32_WINNT%
 
 @rem needed for building xp compat apps, for gui apps should be -subsystem:window,%TARGET_SUBSYSTEM%
+@rem link in 2008 2010 2012 default to x86:5.00 x64:5.02, 2013 2015 2017 2019 2022 default to 6.00
+@rem link in v110_xp v120_xp v140_xp v141_xp default to x86:5.01 x64:5.02
 @rem set _LINK_=-subsystem:console,%TARGET_SUBSYSTEM%
 
 set INSDIR=%BUILDROOT%\%TARGET_ARCH%

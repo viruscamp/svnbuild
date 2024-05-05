@@ -13,9 +13,18 @@ if "%1"=="test" goto TEST
 rmdir /s /q openssl-%VER_OPENSSL%
 7z x %SOURCES_DIR%\openssl-%VER_OPENSSL%.tar.gz -so | 7z x -aoa -si -ttar -o.
 cd openssl-%VER_OPENSSL%
-if not "%VER_OPENSSL%"=="1.1.1o" goto UNPACK_DONE
+
+if not "%VER_OPENSSL%"=="1.1.1o" goto PATCH111O_DONE
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18446.patch
 patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.patch
+:PATCH111O_DONE
+
+if not "%VER_OPENSSL%"=="3.3.0" goto PATCH330_DONE
+patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.3.0-issue-24109.patch
+:PATCH330_DONE
+
+@rem TODO 3.2.1 and 3.3.0 need to replace all `snprintf` to `BIO_snprintf` in low version of msvc
+
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
 
