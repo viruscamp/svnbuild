@@ -19,6 +19,22 @@ if not "%VER_OPENSSL%"=="1.1.1o" goto PATCH111O_DONE
   patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-1.1.1-pull-18481.patch
 :PATCH111O_DONE
 
+if "%MSVC_VERSION%" geq "2010" goto PATCH_STDINT_DONE
+@rem vs2008 undefined macros: INT64_MAX UINT64_C EISCONN
+  if not "%VER_OPENSSL%"=="3.0.13" goto PATCH3013_STDINT_DONE
+    patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.0.13-vs2008-stdint.patch
+  :PATCH3013_STDINT_DONE
+
+  if not "%VER_OPENSSL%"=="3.2.1" goto PATCH321_STDINT_DONE
+    patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.2.1-vs2008-stdint-errno.patch
+  :PATCH321_STDINT_DONE
+  
+  if not "%VER_OPENSSL%"=="3.3.0" goto PATCH330_STDINT_DONE
+    patch -d . -p 1 --binary -f -i %SOURCES_DIR%\patches\openssl-3.2.1-vs2008-stdint-errno.patch
+  :PATCH330_STDINT_DONE
+
+:PATCH_STDINT_DONE
+
 if "%MSVC_VERSION%" geq "2015" goto PATCH_SNPRINTF_DONE
 @rem replace all `snprintf` to `BIO_snprintf` for MSVC_VERSION < 2015
   if not "%VER_OPENSSL%"=="3.2.1" goto PATCH321_SNPRINTF_DONE
