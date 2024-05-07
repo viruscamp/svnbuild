@@ -1,0 +1,11 @@
+--- Makefile.msvc
++++ Makefile.msvc
+@@ -199,7 +199,7 @@ intl3_svn.lib : $(OBJECTS) $(RESOURCES)
+ 	mt -nologo -manifest intl3_svn.dll.manifest /outputresource:"intl3_svn.dll;#2"
+ 
+ intl.res : $(srcdir)\..\windows\intl.rc
+-	rc -nologo -Fo intl.res $(srcdir)\libintl3-dll.rc
++	rc -Fo intl.res $(srcdir)\libintl3-dll.rc
+ 
+ !endif
+ 

@@ -14,6 +14,11 @@ rmdir /s /q gettext-%VER_LIBINTL%
 cd gettext-%VER_LIBINTL%\gettext-runtime\intl\
 patch -d . -p 0 --binary -f -i %SOURCES_DIR%\patches\libintl-tsvn-makefile.patch
 patch -d . -p 0 --binary -f -i %SOURCES_DIR%\patches\libintl-version.patch
+
+if "%MSVC_VERSION%" geq "2010" goto PATCH_2008_DONE
+patch -d . -p 0 --binary -f -i %SOURCES_DIR%\patches\libintl-makefile-2008.patch
+:PATCH_2008_DONE
+
 :UNPACK_DONE
 if "%1"=="unpack" goto EXIT
 
